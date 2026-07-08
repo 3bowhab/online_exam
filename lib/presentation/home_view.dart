@@ -10,8 +10,24 @@ class HomeView extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Home View'),
       ),
-      body: Center(
-        child: Text(AppLocalizations.of(context)!.helloWorld),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: .stretch,
+          mainAxisAlignment: .center,
+          children: [
+            Text(AppLocalizations.of(context)!.helloWorld),
+            SizedBox(height: 16),
+            ElevatedButton(onPressed: (){}, child: const Text('Press Me')),
+            SizedBox(height: 16),
+            TextField(
+              decoration: InputDecoration(
+                hintText: AppLocalizations.of(context)!.helloWorld,
+                labelText: AppLocalizations.of(context)!.helloWorld,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
