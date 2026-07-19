@@ -4,15 +4,9 @@ import 'package:injectable/injectable.dart';
 import 'package:online_exam/core/network/api_constants.dart';
 import 'package:online_exam/core/network/auth_interceptor.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 @module
 abstract class NetworkModule {
-  @preResolve
-  @singleton
-  Future<SharedPreferences> get sharedPreferences =>
-      SharedPreferences.getInstance();
-
   @singleton
   Dio provideDio(AuthInterceptor authInterceptor) {
     Dio dio = Dio();
