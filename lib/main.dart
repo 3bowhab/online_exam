@@ -3,7 +3,7 @@ import 'package:online_exam/core/di/di.dart';
 import 'package:online_exam/core/theme/app_theme.dart';
 import 'package:online_exam/core/widgets/app_config_prvider.dart';
 import 'package:online_exam/l10n/app_localizations.dart';
-import 'package:online_exam/presentation/home_view.dart';
+import 'package:online_exam/presentation/pages/home_view.dart';
 import 'package:provider/provider.dart';
 
 void main() async {

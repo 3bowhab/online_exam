@@ -15,7 +15,7 @@ import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
-import '../../data/api/api_client.dart' as _i681;
+import '../../data/data_source//api/api_client.dart' as _i681;
 import '../network/auth_interceptor.dart' as _i908;
 import '../theme/app_colors.dart' as _i57;
 import '../theme/app_theme.dart' as _i1025;
