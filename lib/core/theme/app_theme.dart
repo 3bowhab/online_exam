@@ -3,8 +3,6 @@ import 'package:injectable/injectable.dart';
 import 'package:online_exam/core/theme/app_colors.dart';
 
 @injectable
-
-// Define a class for app theme that takes an instance of AppColors
 class AppTheme {
   final AppColors colors;
 
@@ -30,22 +28,10 @@ class AppTheme {
 
     // Define input decoration theme
     inputDecorationTheme: InputDecorationTheme(
-      hintStyle: TextStyle(
-        color: colors.placeHolder,
-        fontSize: 14,
-      ),
-      labelStyle: TextStyle(
-        color: colors.gray,
-        fontSize: 14,
-      ),
-      errorStyle: TextStyle(
-        color: colors.error,
-        fontSize: 14,
-      ),
-      contentPadding: const EdgeInsets.symmetric(
-        horizontal: 16,
-        vertical: 16,
-      ),
+      hintStyle: TextStyle(color: colors.placeHolder, fontSize: 14),
+      labelStyle: TextStyle(color: colors.gray, fontSize: 14),
+      errorStyle: TextStyle(color: colors.error, fontSize: 14),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
         borderSide: BorderSide(color: colors.black),
@@ -75,10 +61,7 @@ class AppTheme {
         foregroundColor: colors.white,
         elevation: 0,
         padding: const EdgeInsets.symmetric(vertical: 16),
-        textStyle: const TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.w600,
-        ),
+        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
       ),
     ),
   );
