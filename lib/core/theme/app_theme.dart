@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:injectable/injectable.dart';
 import 'package:online_exam/core/theme/app_colors.dart';
 
-@injectable
 class AppTheme {
   final AppColors colors;
 

@@ -17,9 +17,8 @@ import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
 import '../../data/api/api_client.dart' as _i681;
 import '../network/auth_interceptor.dart' as _i908;
-import '../theme/app_colors.dart' as _i57;
-import '../theme/app_theme.dart' as _i1025;
 import '../widgets/app_config_prvider.dart' as _i24;
+import '../widgets/app_router.dart' as _i389;
 import 'asset_bundle_module.dart' as _i44;
 import 'network_module.dart' as _i567;
 import 'storage_module.dart' as _i371;
@@ -41,17 +40,15 @@ extension GetItInjectableX on _i174.GetIt {
     gh.singleton<_i281.AssetBundle>(
       () => assetBundleModule.provideAssetBundle(),
     );
+    gh.singleton<_i389.AppRouter>(() => _i389.AppRouter());
     gh.factory<_i908.AuthInterceptor>(
       () => _i908.AuthInterceptor(gh<_i460.SharedPreferences>()),
     );
-    gh.factory<_i57.AppColors>(() => _i57.LightThemeColors());
-    gh.factory<_i1025.AppTheme>(() => _i1025.AppTheme(gh<_i57.AppColors>()));
     gh.singleton<_i361.Dio>(
       () => networkModule.provideDio(gh<_i908.AuthInterceptor>()),
     );
-    gh.lazySingleton<_i24.AppConfigPrvider>(
-      () => _i24.AppConfigPrvider(
-        appTheme: gh<_i1025.AppTheme>(),
+    gh.lazySingleton<_i24.AppConfigProvider>(
+      () => _i24.AppConfigProvider(
         sharedPreferences: gh<_i460.SharedPreferences>(),
       ),
     );

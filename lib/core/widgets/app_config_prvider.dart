@@ -1,15 +1,21 @@
-import 'package:flutter/foundation.dart';
+// import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
-import 'package:online_exam/core/di/di.dart';
+// import 'package:online_exam/core/di/di.dart';
 import 'package:online_exam/core/theme/app_colors.dart';
 import 'package:online_exam/core/theme/app_theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 @lazySingleton
-class AppConfigPrvider extends ChangeNotifier {
-  AppTheme appTheme;
-  SharedPreferences? sharedPreferences;
-  AppConfigPrvider({required this.appTheme, this.sharedPreferences});
+class AppConfigProvider extends ChangeNotifier {
+  final SharedPreferences? sharedPreferences;
+
+  late ThemeData _themeData;
+  ThemeData get themeData => _themeData;
+
+  AppConfigProvider({this.sharedPreferences}) {
+    _themeData = AppTheme(LightThemeColors()).themeData;
+  }
 
   Future<void> changeTheme(ThemeOptions themeOption) async {
     AppColors appColors = switch (themeOption) {
@@ -17,21 +23,8 @@ class AppConfigPrvider extends ChangeNotifier {
       ThemeOptions.dark => DarkThemeColors(),
     };
 
-    if (getIt.isRegistered<AppColors>()) {
-      await getIt.unregister<AppColors>();
-    }
-
-    if (getIt.isRegistered<AppTheme>()) {
-      await getIt.unregister<AppTheme>();
-    }
-
-    if (getIt.isRegistered<ThemeOptions>()) {
-      await getIt.unregister<ThemeOptions>();
-    }
-
-    getIt.registerSingleton<AppColors>(appColors);
-    getIt.registerSingleton<AppTheme>(AppTheme(getIt()));
-    getIt.registerSingleton<ThemeOptions>(themeOption);
+    _themeData = AppTheme(appColors).themeData;
+    await sharedPreferences?.setString('theme', themeOption.name);
     notifyListeners();
   }
 
