@@ -1,4 +1,24 @@
 {
   "@@locale": "ar",
-  "helloWorld": "مرحبا بالعالم!"
+  "helloWorld": "مرحبا بالعالم!",
+  "password": "كلمة السر",
+  "forgetPassword": "نسيت كلمة السر",
+  "forgetPasswordSubTitle": "يرجى إدخال البريد الإلكتروني المرتبط\nبحسابك",
+  "email": "البريد الإلكتروني",
+  "enterYourEmail": "أدخل البريد الإلكتروني",
+  "emailIsRequired": "البريد الإلكتروني مطلوب",
+  "invalidEmail": "هذا البريد الإلكتروني غير صالح",
+  "continueButton": "متابعة",
+  "emailVerification": "تأكيد البريد الإلكتروني",
+  "emailVerificationSubTitle": "يرجى إدخال الكود المرسل إلى\nبريدك الإلكتروني",
+  "invalidCode": "الكود غير صالح",
+  "didntReceiveCode": "لم تصلك الرسالة؟ ",
+  "resend": "إعادة إرسال",
+  "resetPassword": "إعادة تعيين كلمة السر",
+  "resetPasswordSubTitle": "يجب ألا تكون كلمة السر فارغة وأن تحتوي على\n 6 أحرف على الأقل مع حرف كبير ورقم واحد على الأقل",
+  "newPassword": "كلمة السر الجديدة",
+  "enterYourPassword": "أدخل كلمة السر",
+  "confirmPassword": "تأكيد كلمة السر",
+  "invalidPassword": "كلمة السر غير صالحة",
+  "passwordsDoNotMatch": "كلمات السر غير متطابقة"
 }
