@@ -16,6 +16,15 @@ import 'package:injectable/injectable.dart' as _i526;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
 import '../../data/api/api_client.dart' as _i681;
+import '../../data/datasource/contract/auth_remote_datasource.dart' as _i912;
+import '../../data/datasource/implementation/auth_remote_datasource_impl.dart'
+    as _i836;
+import '../../data/repository/auth_repository_impl.dart' as _i581;
+import '../../domain/repository/auth_repository.dart' as _i614;
+import '../../domain/use_case/auth/forgot_password_use_case.dart' as _i120;
+import '../../domain/use_case/auth/reset_password_use_case.dart' as _i603;
+import '../../domain/use_case/auth/verify_reset_code_use_case.dart' as _i759;
+import '../../presentation/auth/cubit/auth_cubit.dart' as _i1063;
 import '../network/auth_interceptor.dart' as _i908;
 import '../widgets/app_config_prvider.dart' as _i24;
 import '../widgets/app_router.dart' as _i389;
@@ -53,6 +62,28 @@ extension GetItInjectableX on _i174.GetIt {
       ),
     );
     gh.lazySingleton<_i681.ApiClient>(() => _i681.ApiClient(gh<_i361.Dio>()));
+    gh.lazySingleton<_i912.AuthRemoteDataSource>(
+      () => _i836.AuthRemoteDataSourceImpl(gh<_i681.ApiClient>()),
+    );
+    gh.lazySingleton<_i614.AuthRepository>(
+      () => _i581.AuthRepositoryImpl(gh<_i912.AuthRemoteDataSource>()),
+    );
+    gh.factory<_i120.ForgotPasswordUseCase>(
+      () => _i120.ForgotPasswordUseCase(gh<_i614.AuthRepository>()),
+    );
+    gh.factory<_i603.ResetPasswordUseCase>(
+      () => _i603.ResetPasswordUseCase(gh<_i614.AuthRepository>()),
+    );
+    gh.factory<_i759.VerifyResetCodeUseCase>(
+      () => _i759.VerifyResetCodeUseCase(gh<_i614.AuthRepository>()),
+    );
+    gh.factory<_i1063.AuthCubit>(
+      () => _i1063.AuthCubit(
+        gh<_i120.ForgotPasswordUseCase>(),
+        gh<_i759.VerifyResetCodeUseCase>(),
+        gh<_i603.ResetPasswordUseCase>(),
+      ),
+    );
     return this;
   }
 }

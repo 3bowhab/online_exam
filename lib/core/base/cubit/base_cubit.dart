@@ -1,3 +1,4 @@
+import 'dart:developer' as developer;
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 abstract class BaseCubit<S> extends Cubit<S> {
@@ -8,8 +9,8 @@ abstract class BaseCubit<S> extends Cubit<S> {
       emit(state);
     }
   }
-  void log(Object message) {
-    log("[${runtimeType}] $message");
-  }
 
+  void logMessage(Object message) {
+    developer.log("[$runtimeType] $message");
+  }
 }
