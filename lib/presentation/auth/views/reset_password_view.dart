@@ -14,31 +14,33 @@ class ResetPasswordView extends StatefulWidget {
   const ResetPasswordView({super.key, required this.email});
 
   @override
-  State<ResetPasswordView> createState() => _ResetPasswordViewState();
+  State<ResetPasswordView> createState() => ResetPasswordViewState();
 }
 
-class _ResetPasswordViewState extends State<ResetPasswordView> {
-  final AuthCubit cubit = getIt<AuthCubit>();
-  final TextEditingController newPasswordController = TextEditingController();
-  final TextEditingController confirmPasswordController =
+class ResetPasswordViewState extends State<ResetPasswordView> {
+  final AuthCubit _cubit = getIt<AuthCubit>();
+  final TextEditingController _newPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
       TextEditingController();
-  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
     super.initState();
-    cubit.uiStream.listen((event) {
-      if (!mounted) return;
-      if (event is NavigateToLoginScreen) {
-        context.go('/login');
-      }
-    });
+    _cubit.uiStream.listen(_handleUiEvents);
+  }
+
+  void _handleUiEvents(AuthUiEvents event) {
+    if (!mounted) return;
+    if (event is NavigateToLoginScreen) {
+      context.go('/login');
+    }
   }
 
   @override
   void dispose() {
-    newPasswordController.dispose();
-    confirmPasswordController.dispose();
+    _newPasswordController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
   }
 
@@ -48,107 +50,129 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
     final theme = Theme.of(context);
 
     return BlocProvider.value(
-      value: cubit,
+      value: _cubit,
       child: Scaffold(
-        appBar: AppBar(
-          leading: const BackButton(),
-          title: Text(
-            locale.password,
-            style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w500),
-          ),
-        ),
-        body: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.w),
-          child: Form(
-            key: formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                SizedBox(height: 40.h),
-                Center(
-                  child: Text(
-                    locale.resetPassword,
-                    style: TextStyle(
-                      fontSize: 18.sp,
-                      fontWeight: FontWeight.w500,
-                      color: theme.textTheme.bodyLarge?.color,
-                    ),
-                  ),
-                ),
-                SizedBox(height: 16.h),
-                Center(
-                  child: Text(
-                    locale.resetPasswordSubTitle,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      color: theme.textTheme.bodyMedium?.color,
-                    ),
-                  ),
-                ),
-                SizedBox(height: 32.h),
-                TextFormField(
-                  controller: newPasswordController,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    labelText: locale.newPassword,
-                    hintText: locale.enterYourPassword,
-                  ),
-                  validator: (v) => v != null && v.length >= 6
-                      ? null
-                      : locale.invalidPassword,
-                ),
-                SizedBox(height: 16.h),
-                TextFormField(
-                  controller: confirmPasswordController,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    labelText: locale.confirmPassword,
-                    hintText: locale.confirmPassword,
-                  ),
-                  validator: (v) {
-                    if (v != newPasswordController.text) {
-                      return locale.passwordsDoNotMatch;
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 48.h),
-                BlocBuilder<AuthCubit, AuthState>(
-                  builder: (context, state) {
-                    final bool isLoading =
-                        state.resetPasswordState.status == StateStatus.loading;
-                    return ElevatedButton(
-                      onPressed: isLoading
-                          ? null
-                          : () {
-                              if (formKey.currentState!.validate()) {
-                                cubit.doIntent(
-                                  SubmitResetPasswordEvent(
-                                    email: widget.email,
-                                    newPassword: newPasswordController.text
-                                        .trim(),
-                                  ),
-                                );
-                              }
-                            },
-                      child: isLoading
-                          ? SizedBox(
-                              height: 20.h,
-                              width: 20.w,
-                              child: CircularProgressIndicator(
-                                color: theme.colorScheme.onPrimary,
-                              ),
-                            )
-                          : Text(locale.continueButton),
-                    );
-                  },
-                ),
-              ],
-            ),
-          ),
+        appBar: _buildAppBar(locale),
+        body: _buildBody(locale, theme),
+      ),
+    );
+  }
+
+  PreferredSizeWidget _buildAppBar(AppLocalizations locale) {
+    return AppBar(
+      leading: const BackButton(),
+      title: Text(
+        locale.password,
+        style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w500),
+      ),
+    );
+  }
+
+  Widget _buildBody(AppLocalizations locale, ThemeData theme) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16.w),
+      child: Form(
+        key: _formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            SizedBox(height: 40.h),
+            _buildHeader(locale, theme),
+            SizedBox(height: 32.h),
+            _buildPasswordFields(locale),
+            SizedBox(height: 48.h),
+            _buildSubmitButton(locale, theme),
+          ],
         ),
       ),
     );
+  }
+
+  Widget _buildHeader(AppLocalizations locale, ThemeData theme) {
+    return Column(
+      children: [
+        Text(
+          locale.resetPassword,
+          style: TextStyle(
+            fontSize: 18.sp,
+            fontWeight: FontWeight.w500,
+            color: theme.textTheme.bodyLarge?.color,
+          ),
+        ),
+        SizedBox(height: 16.h),
+        Text(
+          locale.resetPasswordSubTitle,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 14.sp,
+            color: theme.textTheme.bodyMedium?.color,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPasswordFields(AppLocalizations locale) {
+    return Column(
+      children: [
+        TextFormField(
+          controller: _newPasswordController,
+          obscureText: true,
+          decoration: InputDecoration(
+            labelText: locale.newPassword,
+            hintText: locale.enterYourPassword,
+          ),
+          validator: (v) =>
+              v != null && v.length >= 6 ? null : locale.invalidPassword,
+        ),
+        SizedBox(height: 16.h),
+        TextFormField(
+          controller: _confirmPasswordController,
+          obscureText: true,
+          decoration: InputDecoration(
+            labelText: locale.confirmPassword,
+            hintText: locale.confirmPassword,
+          ),
+          validator: (v) {
+            if (v != _newPasswordController.text) {
+              return locale.passwordsDoNotMatch;
+            }
+            return null;
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSubmitButton(AppLocalizations locale, ThemeData theme) {
+    return BlocBuilder<AuthCubit, AuthState>(
+      builder: (context, state) {
+        final bool isLoading =
+            state.resetPasswordState.status == StateStatus.loading;
+        return ElevatedButton(
+          onPressed: isLoading ? null : _onSubmit,
+          child: isLoading
+              ? SizedBox(
+                  height: 20.h,
+                  width: 20.w,
+                  child: CircularProgressIndicator(
+                    color: theme.colorScheme.onPrimary,
+                  ),
+                )
+              : Text(locale.continueButton),
+        );
+      },
+    );
+  }
+
+  void _onSubmit() {
+    if (_formKey.currentState!.validate()) {
+      _cubit.doIntent(
+        SubmitResetPasswordEvent(
+          email: widget.email,
+          newPassword: _newPasswordController.text.trim(),
+        ),
+      );
+    }
   }
 }

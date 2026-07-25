@@ -15,27 +15,29 @@ class VerifyCodeView extends StatefulWidget {
   const VerifyCodeView({super.key, required this.email});
 
   @override
-  State<VerifyCodeView> createState() => _VerifyCodeViewState();
+  State<VerifyCodeView> createState() => VerifyCodeViewState();
 }
 
-class _VerifyCodeViewState extends State<VerifyCodeView> {
-  final AuthCubit cubit = getIt<AuthCubit>();
-  final TextEditingController pinController = TextEditingController();
+class VerifyCodeViewState extends State<VerifyCodeView> {
+  final AuthCubit _cubit = getIt<AuthCubit>();
+  final TextEditingController _pinController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    cubit.uiStream.listen((event) {
-      if (!mounted) return;
-      if (event is NavigateToResetPasswordScreen) {
-        context.push('/reset_password', extra: widget.email);
-      }
-    });
+    _cubit.uiStream.listen(_handleUiEvents);
+  }
+
+  void _handleUiEvents(AuthUiEvents event) {
+    if (!mounted) return;
+    if (event is NavigateToResetPasswordScreen) {
+      context.push('/reset_password', extra: widget.email);
+    }
   }
 
   @override
   void dispose() {
-    pinController.dispose();
+    _pinController.dispose();
     super.dispose();
   }
 
@@ -44,6 +46,66 @@ class _VerifyCodeViewState extends State<VerifyCodeView> {
     final locale = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
 
+    return BlocProvider.value(
+      value: _cubit,
+      child: Scaffold(
+        appBar: _buildAppBar(locale),
+        body: _buildBody(locale, theme),
+      ),
+    );
+  }
+
+  PreferredSizeWidget _buildAppBar(AppLocalizations locale) {
+    return AppBar(
+      leading: const BackButton(),
+      title: Text(
+        locale.password,
+        style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w500),
+      ),
+    );
+  }
+
+  Widget _buildBody(AppLocalizations locale, ThemeData theme) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16.w),
+      child: Column(
+        children: [
+          SizedBox(height: 40.h),
+          _buildHeader(locale, theme),
+          SizedBox(height: 32.h),
+          _buildPinSection(locale, theme),
+          SizedBox(height: 32.h),
+          _buildResendRow(locale, theme),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHeader(AppLocalizations locale, ThemeData theme) {
+    return Column(
+      children: [
+        Text(
+          locale.emailVerification,
+          style: TextStyle(
+            fontSize: 18.sp,
+            fontWeight: FontWeight.w500,
+            color: theme.textTheme.bodyLarge?.color,
+          ),
+        ),
+        SizedBox(height: 16.h),
+        Text(
+          locale.emailVerificationSubTitle,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 14.sp,
+            color: theme.textTheme.bodyMedium?.color,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPinSection(AppLocalizations locale, ThemeData theme) {
     final defaultPinTheme = PinTheme(
       width: 75.w,
       height: 60.h,
@@ -64,112 +126,81 @@ class _VerifyCodeViewState extends State<VerifyCodeView> {
       ),
     );
 
-    return BlocProvider.value(
-      value: cubit,
-      child: Scaffold(
-        appBar: AppBar(
-          leading: const BackButton(),
-          title: Text(
-            locale.password,
-            style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w500),
-          ),
-        ),
-        body: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.w),
-          child: Column(
+    return BlocBuilder<AuthCubit, AuthState>(
+      builder: (context, state) {
+        final bool isError =
+            state.verifyCodeState.status == StateStatus.error;
+        return Column(
+          children: [
+            Pinput(
+              controller: _pinController,
+              length: 4,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              defaultPinTheme: defaultPinTheme,
+              errorPinTheme: errorPinTheme,
+              forceErrorState: isError,
+              onCompleted: (code) {
+                _cubit.doIntent(SubmitVerifyCodeEvent(code));
+              },
+            ),
+            if (isError) _buildErrorMessage(state, locale, theme),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildErrorMessage(
+      AuthState state, AppLocalizations locale, ThemeData theme) {
+    return Column(
+      children: [
+        SizedBox(height: 8.h),
+        Align(
+          alignment: Alignment.centerRight,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              SizedBox(height: 40.h),
+              Icon(
+                Icons.error_outline_rounded,
+                color: theme.colorScheme.error,
+                size: 16.sp,
+              ),
+              SizedBox(width: 4.w),
               Text(
-                locale.emailVerification,
+                state.verifyCodeState.message ?? locale.invalidCode,
                 style: TextStyle(
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.w500,
-                  color: theme.textTheme.bodyLarge?.color,
+                  color: theme.colorScheme.error,
+                  fontSize: 12.sp,
                 ),
-              ),
-              SizedBox(height: 16.h),
-              Text(
-                locale.emailVerificationSubTitle,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 14.sp,
-                  color: theme.textTheme.bodyMedium?.color,
-                ),
-              ),
-              SizedBox(height: 32.h),
-              BlocBuilder<AuthCubit, AuthState>(
-                builder: (context, state) {
-                  final bool isError =
-                      state.verifyCodeState.status == StateStatus.error;
-                  return Column(
-                    children: [
-                      Pinput(
-                        controller: pinController,
-                        length: 4,
-                        mainAxisAlignment: MainAxisAlignment
-                            .spaceBetween,
-                        defaultPinTheme: defaultPinTheme,
-                        errorPinTheme: errorPinTheme,
-                        forceErrorState: isError,
-                        onCompleted: (code) {
-                          cubit.doIntent(SubmitVerifyCodeEvent(code));
-                        },
-                      ),
-                      if (isError) ...[
-                        SizedBox(height: 8.h),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                Icons.error_outline_rounded,
-                                color: theme.colorScheme.error,
-                                size: 16.sp,
-                              ),
-                              SizedBox(width: 4.w),
-                              Text(
-                                state.verifyCodeState.message ??
-                                    locale.invalidCode,
-                                style: TextStyle(
-                                  color: theme.colorScheme.error,
-                                  fontSize: 12.sp,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ],
-                  );
-                },
-              ),
-              SizedBox(height: 32.h),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    locale.didntReceiveCode,
-                    style: TextStyle(color: theme.textTheme.bodyMedium?.color),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      cubit.doIntent(SubmitEmailEvent(widget.email));
-                    },
-                    child: Text(
-                      locale.resend,
-                      style: TextStyle(
-                        color: theme.colorScheme.primary,
-                        decoration: TextDecoration.underline,
-                      ),
-                    ),
-                  ),
-                ],
               ),
             ],
           ),
         ),
-      ),
+      ],
+    );
+  }
+
+  Widget _buildResendRow(AppLocalizations locale, ThemeData theme) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          locale.didntReceiveCode,
+          style: TextStyle(color: theme.textTheme.bodyMedium?.color),
+        ),
+        GestureDetector(
+          onTap: () {
+            _cubit.doIntent(SubmitEmailEvent(widget.email));
+          },
+          child: Text(
+            locale.resend,
+            style: TextStyle(
+              color: theme.colorScheme.primary,
+              decoration: TextDecoration.underline,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

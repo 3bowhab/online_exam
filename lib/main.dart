@@ -22,30 +22,27 @@ class MyApp extends StatelessWidget {
       designSize: const Size(375, 812),
       minTextAdapt: true,
       splitScreenMode: true,
-      builder: (context, child) {
-        return ChangeNotifierProvider.value(
-          value: getIt<AppConfigProvider>(),
-          builder: (context, child) {
-            return Consumer<AppConfigProvider>(
-              builder: (context, appConfigProvider, child) {
-                return MaterialApp.router(
-                  debugShowCheckedModeBanner: false,
+      builder: (context, child) => _buildAppProvider(),
+    );
+  }
 
-                  // Localization
-                  localizationsDelegates:
-                      AppLocalizations.localizationsDelegates,
-                  supportedLocales: AppLocalizations.supportedLocales,
-                  locale: const Locale('en'),
+  Widget _buildAppProvider() {
+    return ChangeNotifierProvider.value(
+      value: getIt<AppConfigProvider>(),
+      builder: (context, child) => _buildMaterialApp(),
+    );
+  }
 
-                  // Theme (بقين بنجيبه من الـ Provider مباشرة)
-                  theme: appConfigProvider.themeData,
-
-                  // Routing via GoRouter
-                  routerConfig: getIt<AppRouter>().router,
-                );
-              },
-            );
-          },
+  Widget _buildMaterialApp() {
+    return Consumer<AppConfigProvider>(
+      builder: (context, appConfigProvider, child) {
+        return MaterialApp.router(
+          debugShowCheckedModeBanner: false,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          locale: const Locale('en'),
+          theme: appConfigProvider.themeData,
+          routerConfig: getIt<AppRouter>().router,
         );
       },
     );
