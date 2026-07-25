@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:online_exam/core/base/cubit/state_status.dart';
 import 'package:online_exam/core/di/di.dart';
+import 'package:online_exam/core/router/routers_constants.dart';
 import 'package:online_exam/l10n/app_localizations.dart';
 import 'package:online_exam/presentation/auth/cubit/auth_cubit.dart';
 import 'package:online_exam/presentation/auth/cubit/auth_events.dart';
@@ -33,7 +34,7 @@ class ResetPasswordViewState extends State<ResetPasswordView> {
   void _handleUiEvents(AuthUiEvents event) {
     if (!mounted) return;
     if (event is NavigateToLoginScreen) {
-      context.go('/login');
+      context.go(RoutersConstants.home);
     }
   }
 
