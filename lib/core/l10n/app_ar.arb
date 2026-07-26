@@ -20,5 +20,10 @@
   "enterYourPassword": "أدخل كلمة السر",
   "confirmPassword": "تأكيد كلمة السر",
   "invalidPassword": "كلمة السر غير صالحة",
-  "passwordsDoNotMatch": "كلمات السر غير متطابقة"
+  "passwordsDoNotMatch": "كلمات السر غير متطابقة",
+  "login": "تسجيل الدخول",
+  "rememberMe": "تذكرني",
+  "forgotPassword": "نسيت كلمة المرور؟",
+  "dontHaveAccount": "ليس لديك حساب؟ ",
+  "signUp": "إنشاء حساب"
 }

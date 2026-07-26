@@ -1,5 +1,6 @@
 import 'package:online_exam/core/network/api_result.dart';
 import 'package:online_exam/core/network/base_response.dart';
+import 'package:online_exam/domain/entities/user_entity.dart';
 
 abstract class AuthRepository {
   Future<ApiResult<BaseResponse<void>>> forgotPassword(String email);
@@ -8,4 +9,8 @@ abstract class AuthRepository {
     String email,
     String newPassword,
   );
+  Future<ApiResult<UserEntity>> login({
+    required String email,
+    required String password,
+  });
 }

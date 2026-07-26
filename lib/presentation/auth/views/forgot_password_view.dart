@@ -5,10 +5,10 @@ import 'package:go_router/go_router.dart';
 import 'package:online_exam/core/base/cubit/state_status.dart';
 import 'package:online_exam/core/di/di.dart';
 import 'package:online_exam/core/router/routers_constants.dart';
-import 'package:online_exam/l10n/app_localizations.dart';
-import 'package:online_exam/presentation/auth/cubit/auth_cubit.dart';
-import 'package:online_exam/presentation/auth/cubit/auth_events.dart';
-import 'package:online_exam/presentation/auth/cubit/auth_state.dart';
+import 'package:online_exam/core/l10n/app_localizations.dart';
+import 'package:online_exam/presentation/auth/cubit/forget_password_flow_cubit.dart';
+import 'package:online_exam/presentation/auth/cubit/forget_password_flow_events.dart';
+import 'package:online_exam/presentation/auth/cubit/forget_password_flow_state.dart';
 
 class ForgotPasswordView extends StatefulWidget {
   const ForgotPasswordView({super.key});
@@ -18,7 +18,7 @@ class ForgotPasswordView extends StatefulWidget {
 }
 
 class ForgotPasswordViewState extends State<ForgotPasswordView> {
-  final AuthCubit _cubit = getIt<AuthCubit>();
+  final ForgetPasswordFlowCubit _cubit = getIt<ForgetPasswordFlowCubit>();
   final TextEditingController _emailController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -117,7 +117,7 @@ class ForgotPasswordViewState extends State<ForgotPasswordView> {
   }
 
   Widget _buildEmailField(AppLocalizations locale) {
-    return BlocBuilder<AuthCubit, AuthState>(
+    return BlocBuilder<ForgetPasswordFlowCubit, ForgetPasswordFlowState>(
       builder: (context, state) {
         final bool isError =
             state.forgotPasswordState.status == StateStatus.error;
@@ -142,7 +142,7 @@ class ForgotPasswordViewState extends State<ForgotPasswordView> {
   }
 
   Widget _buildSubmitButton(AppLocalizations locale, ThemeData theme) {
-    return BlocBuilder<AuthCubit, AuthState>(
+    return BlocBuilder<ForgetPasswordFlowCubit, ForgetPasswordFlowState>(
       builder: (context, state) {
         final bool isLoading =
             state.forgotPasswordState.status == StateStatus.loading;

@@ -7,21 +7,21 @@ import 'package:online_exam/core/network/api_result.dart';
 import 'package:online_exam/domain/use_case/auth/forgot_password_use_case.dart';
 import 'package:online_exam/domain/use_case/auth/reset_password_use_case.dart';
 import 'package:online_exam/domain/use_case/auth/verify_reset_code_use_case.dart';
-import 'package:online_exam/presentation/auth/cubit/auth_events.dart';
-import 'package:online_exam/presentation/auth/cubit/auth_state.dart';
+import 'package:online_exam/presentation/auth/cubit/forget_password_flow_events.dart';
+import 'package:online_exam/presentation/auth/cubit/forget_password_flow_state.dart';
 
 @injectable
-class AuthCubit extends BaseCubit<AuthState> {
+class ForgetPasswordFlowCubit extends BaseCubit<ForgetPasswordFlowState> {
   final ForgotPasswordUseCase forgotPasswordUseCase;
   final VerifyResetCodeUseCase verifyResetCodeUseCase;
   final ResetPasswordUseCase resetPasswordUseCase;
 
-  AuthCubit(
+  ForgetPasswordFlowCubit(
     this.forgotPasswordUseCase,
     this.verifyResetCodeUseCase,
     this.resetPasswordUseCase,
   ) : super(
-        AuthState(
+        ForgetPasswordFlowState(
           forgotPasswordState: const BaseState(),
           verifyCodeState: const BaseState(),
           resetPasswordState: const BaseState(),
@@ -32,7 +32,7 @@ class AuthCubit extends BaseCubit<AuthState> {
       StreamController<AuthUiEvents>.broadcast();
   Stream<AuthUiEvents> get uiStream => _uiController.stream;
 
-  Future<void> doIntent(AuthEvents event) async {
+  Future<void> doIntent(ForgetPasswordFlowEvents event) async {
     switch (event) {
       case SubmitEmailEvent(:final email):
         await _forgotPassword(email);

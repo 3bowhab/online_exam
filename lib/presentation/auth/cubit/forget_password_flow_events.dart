@@ -1,20 +1,20 @@
 import 'package:flutter/foundation.dart';
 
 @immutable
-sealed class AuthEvents {}
+sealed class ForgetPasswordFlowEvents {}
 
 // User Actions (Intents)
-class SubmitEmailEvent extends AuthEvents {
+class SubmitEmailEvent extends ForgetPasswordFlowEvents {
   final String email;
   SubmitEmailEvent(this.email);
 }
 
-class SubmitVerifyCodeEvent extends AuthEvents {
+class SubmitVerifyCodeEvent extends ForgetPasswordFlowEvents {
   final String code;
   SubmitVerifyCodeEvent(this.code);
 }
 
-class SubmitResetPasswordEvent extends AuthEvents {
+class SubmitResetPasswordEvent extends ForgetPasswordFlowEvents {
   final String email;
   final String newPassword;
   SubmitResetPasswordEvent({required this.email, required this.newPassword});

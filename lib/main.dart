@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:online_exam/core/di/di.dart';
 import 'package:online_exam/core/widgets/app_config_prvider.dart';
 import 'package:online_exam/core/router/app_router.dart';
-import 'package:online_exam/l10n/app_localizations.dart';
+import 'package:online_exam/core/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
