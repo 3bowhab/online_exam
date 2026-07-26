@@ -5,6 +5,7 @@ import 'package:online_exam/core/network/base_response.dart';
 import 'package:online_exam/data/models/auth/forgot_password_request.dart';
 import 'package:online_exam/data/models/auth/login_request.dart';
 import 'package:online_exam/data/models/auth/login_response.dart';
+import 'package:online_exam/data/models/auth/logout_response.dart';
 import 'package:online_exam/data/models/auth/reset_password_request.dart';
 import 'package:online_exam/data/models/auth/verify_reset_code_request.dart';
 import 'package:retrofit/retrofit.dart';
@@ -33,7 +34,8 @@ abstract class ApiClient {
   );
 
   @POST('api/v1/auth/signin')
-  Future<LoginResponse> login(
-    @Body() LoginRequest request,
-  );
+  Future<LoginResponse> login(@Body() LoginRequest request);
+
+  @GET('api/v1/auth/logout')
+  Future<LogoutResponse> logout(@Header('token') String token);
 }

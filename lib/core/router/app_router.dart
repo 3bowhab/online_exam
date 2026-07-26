@@ -17,11 +17,9 @@ class AppRouter {
   late final GoRouter router = GoRouter(
     initialLocation: RoutersConstants.login,
     redirect: (context, state) {
-      final bool isRemembered = _prefs.getBool('remember_me') ?? false;
-      final String? savedEmail = _prefs.getString('saved_email');
+      final String? token = _prefs.getString('token');
+      final bool isLoggedIn = token != null && token.isNotEmpty;
 
-      final bool isLoggedIn =
-          isRemembered && savedEmail != null && savedEmail.isNotEmpty;
       final bool isGoingToLogin =
           state.matchedLocation == RoutersConstants.login;
 

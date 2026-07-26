@@ -9,12 +9,14 @@ import 'package:online_exam/data/models/auth/reset_password_request.dart';
 import 'package:online_exam/data/models/auth/verify_reset_code_request.dart';
 import 'package:online_exam/domain/entities/user_entity.dart';
 import 'package:online_exam/domain/repository/auth_repository.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 @LazySingleton(as: AuthRepository)
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource _remoteDataSource;
+  final SharedPreferences _prefs;
 
-  AuthRepositoryImpl(this._remoteDataSource);
+  AuthRepositoryImpl(this._remoteDataSource, this._prefs);
 
   @override
   Future<ApiResult<BaseResponse<void>>> forgotPassword(String email) {
@@ -51,10 +53,25 @@ class AuthRepositoryImpl implements AuthRepository {
 
     switch (result) {
       case ApiSuccess(:final data):
-        // تحويل الـ Model لـ Entity بفضل الـ Extension Mapper
+        if (data.token != null && data.token!.isNotEmpty) {
+          await _prefs.setString('token', data.token!);
+        }
+
         final userEntity = data.user.toEntity();
         return ApiSuccess(userEntity);
 
+      case ApiFailure(:final error):
+        return ApiFailure(error);
+    }
+  }
+
+  @override
+  Future<ApiResult<void>> logout() async {
+    final result = await _remoteDataSource.logout();
+
+    switch (result) {
+      case ApiSuccess():
+        return const ApiSuccess(null);
       case ApiFailure(:final error):
         return ApiFailure(error);
     }
