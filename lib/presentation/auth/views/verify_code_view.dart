@@ -5,10 +5,10 @@ import 'package:go_router/go_router.dart';
 import 'package:online_exam/core/base/cubit/state_status.dart';
 import 'package:online_exam/core/di/di.dart';
 import 'package:online_exam/core/router/routers_constants.dart';
-import 'package:online_exam/l10n/app_localizations.dart';
-import 'package:online_exam/presentation/auth/cubit/auth_cubit.dart';
-import 'package:online_exam/presentation/auth/cubit/auth_events.dart';
-import 'package:online_exam/presentation/auth/cubit/auth_state.dart';
+import 'package:online_exam/core/l10n/app_localizations.dart';
+import 'package:online_exam/presentation/auth/cubit/forget_password_flow_cubit.dart';
+import 'package:online_exam/presentation/auth/cubit/forget_password_flow_events.dart';
+import 'package:online_exam/presentation/auth/cubit/forget_password_flow_state.dart';
 import 'package:pinput/pinput.dart';
 
 class VerifyCodeView extends StatefulWidget {
@@ -20,7 +20,7 @@ class VerifyCodeView extends StatefulWidget {
 }
 
 class VerifyCodeViewState extends State<VerifyCodeView> {
-  final AuthCubit _cubit = getIt<AuthCubit>();
+  final ForgetPasswordFlowCubit _cubit = getIt<ForgetPasswordFlowCubit>();
   final TextEditingController _pinController = TextEditingController();
 
   @override
@@ -127,7 +127,7 @@ class VerifyCodeViewState extends State<VerifyCodeView> {
       ),
     );
 
-    return BlocBuilder<AuthCubit, AuthState>(
+    return BlocBuilder<ForgetPasswordFlowCubit, ForgetPasswordFlowState>(
       builder: (context, state) {
         final bool isError =
             state.verifyCodeState.status == StateStatus.error;
@@ -152,7 +152,7 @@ class VerifyCodeViewState extends State<VerifyCodeView> {
   }
 
   Widget _buildErrorMessage(
-      AuthState state, AppLocalizations locale, ThemeData theme) {
+      ForgetPasswordFlowState state, AppLocalizations locale, ThemeData theme) {
     return Column(
       children: [
         SizedBox(height: 8.h),

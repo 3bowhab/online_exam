@@ -5,10 +5,10 @@ import 'package:go_router/go_router.dart';
 import 'package:online_exam/core/base/cubit/state_status.dart';
 import 'package:online_exam/core/di/di.dart';
 import 'package:online_exam/core/router/routers_constants.dart';
-import 'package:online_exam/l10n/app_localizations.dart';
-import 'package:online_exam/presentation/auth/cubit/auth_cubit.dart';
-import 'package:online_exam/presentation/auth/cubit/auth_events.dart';
-import 'package:online_exam/presentation/auth/cubit/auth_state.dart';
+import 'package:online_exam/core/l10n/app_localizations.dart';
+import 'package:online_exam/presentation/auth/cubit/forget_password_flow_cubit.dart';
+import 'package:online_exam/presentation/auth/cubit/forget_password_flow_events.dart';
+import 'package:online_exam/presentation/auth/cubit/forget_password_flow_state.dart';
 
 class ResetPasswordView extends StatefulWidget {
   final String email;
@@ -19,7 +19,7 @@ class ResetPasswordView extends StatefulWidget {
 }
 
 class ResetPasswordViewState extends State<ResetPasswordView> {
-  final AuthCubit _cubit = getIt<AuthCubit>();
+  final ForgetPasswordFlowCubit _cubit = getIt<ForgetPasswordFlowCubit>();
   final TextEditingController _newPasswordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
@@ -34,7 +34,7 @@ class ResetPasswordViewState extends State<ResetPasswordView> {
   void _handleUiEvents(AuthUiEvents event) {
     if (!mounted) return;
     if (event is NavigateToLoginScreen) {
-      context.go(RoutersConstants.home);
+      context.go(RoutersConstants.profile);
     }
   }
 
@@ -146,7 +146,7 @@ class ResetPasswordViewState extends State<ResetPasswordView> {
   }
 
   Widget _buildSubmitButton(AppLocalizations locale, ThemeData theme) {
-    return BlocBuilder<AuthCubit, AuthState>(
+    return BlocBuilder<ForgetPasswordFlowCubit, ForgetPasswordFlowState>(
       builder: (context, state) {
         final bool isLoading =
             state.resetPasswordState.status == StateStatus.loading;
