@@ -34,7 +34,7 @@ class ResetPasswordViewState extends State<ResetPasswordView> {
   void _handleUiEvents(AuthUiEvents event) {
     if (!mounted) return;
     if (event is NavigateToLoginScreen) {
-      context.go(RoutersConstants.home);
+      context.go(RoutersConstants.profile);
     }
   }
 

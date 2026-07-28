@@ -49,7 +49,7 @@ class LoginViewState extends State<LoginView> {
     if (!mounted) return;
     switch (event) {
       case NavigateToHomeScreen():
-        context.go(RoutersConstants.home);
+        context.go(RoutersConstants.profile);
         break;
 
       case ShowLoginErrorSnackBar(:final message):
@@ -226,7 +226,7 @@ class LoginViewState extends State<LoginView> {
         Text(locale.dontHaveAccount, style: TextStyle(fontSize: 14.sp)),
         GestureDetector(
           onTap: () {
-            context.push(RoutersConstants.home);
+            context.push(RoutersConstants.profile);
           },
           child: Text(
             locale.signUp,

@@ -88,4 +88,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get signUp => 'Sign up';
+
+  @override
+  String get profileTitle => 'Profile';
+
+  @override
+  String get logout => 'Logout';
 }

@@ -5,20 +5,20 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:online_exam/core/base/cubit/state_status.dart';
 import 'package:online_exam/core/di/di.dart';
+import 'package:online_exam/presentation/profile/cubit/profile_state.dart';
 import 'package:online_exam/core/l10n/app_localizations.dart';
 import 'package:online_exam/core/router/routers_constants.dart';
 import 'package:online_exam/presentation/profile/cubit/profile_cubit.dart';
 import 'package:online_exam/presentation/profile/cubit/profile_events.dart';
-import 'package:online_exam/presentation/profile/cubit/profile_state.dart';
 
-class HomeView extends StatefulWidget {
-  const HomeView({super.key});
+class ProfileView extends StatefulWidget {
+  const ProfileView({super.key});
 
   @override
-  State<HomeView> createState() => _HomeViewState();
+  State<ProfileView> createState() => ProfileViewState();
 }
 
-class _HomeViewState extends State<HomeView> {
+class ProfileViewState extends State<ProfileView> {
   final ProfileCubit _cubit = getIt<ProfileCubit>();
   late StreamSubscription<ProfileUiEvents> _uiSubscription;
 
@@ -60,52 +60,61 @@ class _HomeViewState extends State<HomeView> {
     return BlocProvider.value(
       value: _cubit,
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Profile'),
-        ),
-        body: Padding(
-          padding: EdgeInsets.all(16.w),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(locale.helloWorld),
-              SizedBox(height: 16.h),
-              _buildLogoutButton(theme),
-            ],
-          ),
-        ),
+        appBar: AppBar(title: Text(locale.profileTitle)),
+        body: _buildBody(locale, theme),
       ),
     );
   }
 
-  Widget _buildLogoutButton(ThemeData theme) {
+  Widget _buildBody(AppLocalizations locale, ThemeData theme) {
+    return Padding(
+      padding: EdgeInsets.all(16.w),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(locale.helloWorld),
+          SizedBox(height: 16.h),
+          _buildLogoutButton(locale, theme),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLogoutButton(AppLocalizations locale, ThemeData theme) {
     return BlocBuilder<ProfileCubit, ProfileState>(
       builder: (context, state) {
-        final bool isLoading =
-            state.logoutState.status == StateStatus.loading;
+        final bool isLoading = state.logoutState.status == StateStatus.loading;
 
         return ElevatedButton(
           style: ElevatedButton.styleFrom(
             backgroundColor: theme.colorScheme.error,
             padding: EdgeInsets.symmetric(vertical: 12.h),
           ),
-          onPressed: isLoading ? null : () => _cubit.doIntent(SubmitLogoutEvent()),
+          onPressed: isLoading
+              ? null
+              : () => _cubit.doIntent(SubmitLogoutEvent()),
           child: isLoading
-              ? SizedBox(
-                  height: 20.h,
-                  width: 20.w,
-                  child: CircularProgressIndicator(
+              ? _buildLoadingIndicator(theme)
+              : Text(
+                  locale.logout,
+                  style: TextStyle(
                     color: theme.colorScheme.onError,
-                    strokeWidth: 2,
                   ),
-                )
-              : const Text(
-                  'Logout',
-                  style: TextStyle(color: Colors.white),
                 ),
         );
       },
+    );
+  }
+
+  Widget _buildLoadingIndicator(ThemeData theme) {
+    return SizedBox(
+      height: 20.h,
+      width: 20.w,
+      child: CircularProgressIndicator(
+        color: theme.colorScheme.onError,
+        strokeWidth: 2,
+      ),
     );
   }
 }

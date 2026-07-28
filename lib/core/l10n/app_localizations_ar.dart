@@ -88,4 +88,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get signUp => 'إنشاء حساب';
+
+  @override
+  String get profileTitle => 'الملف الشخصي';
+
+  @override
+  String get logout => 'تسجيل الخروج';
 }

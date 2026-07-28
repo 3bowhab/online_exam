@@ -25,5 +25,7 @@
   "rememberMe": "تذكرني",
   "forgotPassword": "نسيت كلمة المرور؟",
   "dontHaveAccount": "ليس لديك حساب؟ ",
-  "signUp": "إنشاء حساب"
+  "signUp": "إنشاء حساب",
+  "profileTitle": "الملف الشخصي",
+  "logout": "تسجيل الخروج"
 }

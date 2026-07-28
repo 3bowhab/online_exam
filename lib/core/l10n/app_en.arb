@@ -27,7 +27,7 @@
   "didntReceiveCode": "Didn't receive code? ",
   "@didntReceiveCode": {},
   "resend": "Resend",
-  "@resend": {}, 
+  "@resend": {},
   "resetPassword": "Reset password",
   "@resetPassword": {},
   "resetPasswordSubTitle": "Password must not be empty and must contain\n6 characters with upper case letter and one\nnumber at least",
@@ -51,5 +51,9 @@
   "dontHaveAccount": "Don't have an account? ",
   "@dontHaveAccount": {},
   "signUp": "Sign up",
-  "@signUp": {}
+  "@signUp": {},
+  "profileTitle": "Profile",
+  "@profileTitle": {},
+  "logout": "Logout",
+  "@logout": {}
 }

@@ -5,7 +5,7 @@ import 'package:online_exam/presentation/auth/views/forgot_password_view.dart';
 import 'package:online_exam/presentation/auth/views/login_view.dart';
 import 'package:online_exam/presentation/auth/views/reset_password_view.dart';
 import 'package:online_exam/presentation/auth/views/verify_code_view.dart';
-import 'package:online_exam/presentation/home_view.dart';
+import 'package:online_exam/presentation/profile/view/profile_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 @singleton
@@ -24,10 +24,10 @@ class AppRouter {
           state.matchedLocation == RoutersConstants.login;
 
       if (isLoggedIn && isGoingToLogin) {
-        return RoutersConstants.home;
+        return RoutersConstants.profile;
       }
 
-      if (!isLoggedIn && state.matchedLocation == RoutersConstants.home) {
+      if (!isLoggedIn && state.matchedLocation == RoutersConstants.profile) {
         return RoutersConstants.login;
       }
 
@@ -35,8 +35,8 @@ class AppRouter {
     },
     routes: [
       GoRoute(
-        path: RoutersConstants.home,
-        builder: (context, state) => const HomeView(),
+        path: RoutersConstants.profile,
+        builder: (context, state) => const ProfileView(),
       ),
       GoRoute(
         path: RoutersConstants.forgotPassword,
