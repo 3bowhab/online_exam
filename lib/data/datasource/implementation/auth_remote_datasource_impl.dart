@@ -21,19 +21,22 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   @override
   Future<ApiResult<BaseResponse<void>>> forgotPassword(
-      ForgotPasswordRequest request) {
+    ForgotPasswordRequest request,
+  ) {
     return safeCall(() => _apiClient.forgotPassword(request));
   }
 
   @override
   Future<ApiResult<BaseResponse<void>>> verifyResetCode(
-      VerifyResetCodeRequest request) {
+    VerifyResetCodeRequest request,
+  ) {
     return safeCall(() => _apiClient.verifyResetCode(request));
   }
 
   @override
   Future<ApiResult<BaseResponse<void>>> resetPassword(
-      ResetPasswordRequest request) {
+    ResetPasswordRequest request,
+  ) {
     return safeCall(() => _apiClient.resetPassword(request));
   }
 
@@ -43,16 +46,16 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-Future<ApiResult<LogoutResponse>> logout() async {
-  final token = _prefs.getString('token') ?? '';
-  final result = await safeCall(() => _apiClient.logout(token));
+  Future<ApiResult<LogoutResponse>> logout() async {
+    final token = _prefs.getString('token') ?? '';
+    final result = await safeCall(() => _apiClient.logout(token));
 
-  if (result is ApiSuccess) {
-    await _prefs.remove('token');
-    await _prefs.remove('remember_me');
-    await _prefs.remove('saved_email');
+    if (result is ApiSuccess) {
+      await _prefs.remove('token');
+      await _prefs.remove('remember_me');
+      await _prefs.remove('saved_email');
+    }
+
+    return result;
   }
-
-  return result;
-}
 }

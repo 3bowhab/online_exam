@@ -94,4 +94,61 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get logout => 'تسجيل الخروج';
+
+  @override
+  String get exploreTab => 'استكشاف';
+
+  @override
+  String get resultTab => 'النتائج';
+
+  @override
+  String get profileTab => 'الملف الشخصي';
+
+  @override
+  String get usernameLabel => 'اسم المستخدم';
+
+  @override
+  String get firstNameLabel => 'الاسم الأول';
+
+  @override
+  String get lastNameLabel => 'اسم العائلة';
+
+  @override
+  String get emailLabel => 'البريد الإلكتروني';
+
+  @override
+  String get passwordLabel => 'كلمة المرور';
+
+  @override
+  String get phoneNumberLabel => 'رقم الهاتف';
+
+  @override
+  String get changePasswordButton => 'تغيير';
+
+  @override
+  String get updateButton => 'تحديث';
+
+  @override
+  String get resetPasswordTitle => 'إعادة ضبط كلمة المرور';
+
+  @override
+  String get currentPasswordLabel => 'كلمة المرور الحالية';
+
+  @override
+  String get newPasswordLabel => 'كلمة المرور الجديدة';
+
+  @override
+  String get confirmPasswordLabel => 'تأكيد كلمة المرور';
+
+  @override
+  String get requiredField => 'هذا الحقل مطلوب';
+
+  @override
+  String get passwordNotMatched => 'كلمة المرور غير متطابقة';
+
+  @override
+  String get profileUpdatedSuccess => 'تم تحديث البيانات بنجاح';
+
+  @override
+  String get passwordChangedSuccess => 'تم تغيير كلمة المرور بنجاح';
 }

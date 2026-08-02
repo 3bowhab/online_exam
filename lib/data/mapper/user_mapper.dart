@@ -9,6 +9,7 @@ extension UserMapper on UserModel? {
       email: this?.email ?? '',
       firstName: this?.firstName ?? '',
       lastName: this?.lastName ?? '',
+      phone: this?.phone ?? '',
     );
   }
 }
