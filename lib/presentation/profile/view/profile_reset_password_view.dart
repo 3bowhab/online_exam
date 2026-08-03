@@ -17,10 +17,10 @@ class ProfileResetPasswordView extends StatefulWidget {
 
   @override
   State<ProfileResetPasswordView> createState() =>
-      ProfileResetPasswordViewState();
+      _ProfileResetPasswordViewState();
 }
 
-class ProfileResetPasswordViewState extends State<ProfileResetPasswordView> {
+class _ProfileResetPasswordViewState extends State<ProfileResetPasswordView> {
   final ProfileCubit _cubit = getIt<ProfileCubit>();
   final _oldPasswordController = TextEditingController();
   final _newPasswordController = TextEditingController();
@@ -44,9 +44,7 @@ class ProfileResetPasswordViewState extends State<ProfileResetPasswordView> {
         _confirmPasswordController.text.trim().isNotEmpty;
 
     if (isFilled != _isFormFilled) {
-      setState(() {
-        _isFormFilled = isFilled;
-      });
+      setState(() => _isFormFilled = isFilled);
     }
   }
 
@@ -76,54 +74,64 @@ class ProfileResetPasswordViewState extends State<ProfileResetPasswordView> {
             onPressed: () => context.pop(),
           ),
         ),
-        body: BlocConsumer<ProfileCubit, ProfileState>(
-          listener: (context, state) {
-            if (state.changePasswordState.status == StateStatus.success) {
-              context.pop();
-            }
-          },
-          builder: (context, state) {
-            final isLoading =
-                state.changePasswordState.status == StateStatus.loading;
-            final isEnabled = _isFormFilled && !isLoading;
+        body: _buildBody(),
+      ),
+    );
+  }
 
-            return SingleChildScrollView(
-              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 24.h),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    ChangePasswordFormFields(
-                      oldPasswordController: _oldPasswordController,
-                      newPasswordController: _newPasswordController,
-                      confirmPasswordController: _confirmPasswordController,
-                    ),
-                    SizedBox(height: 32.h),
-                    ChangePasswordSubmitButton(
-                      isEnabled: isEnabled,
-                      isLoading: isLoading,
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          _cubit.doIntent(
-                            SubmitChangePasswordEvent(
-                              ChangePasswordRequest(
-                                oldPassword: _oldPasswordController.text,
-                                password: _newPasswordController.text,
-                                rePassword: _confirmPasswordController.text,
-                              ),
-                            ),
-                          );
-                        }
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
+  Widget _buildBody() {
+    return BlocConsumer<ProfileCubit, ProfileState>(
+      listener: (context, state) {
+        if (state.changePasswordState.status == StateStatus.success) {
+          context.pop();
+        }
+      },
+      builder: (context, state) {
+        final isLoading =
+            state.changePasswordState.status == StateStatus.loading;
+        return _buildForm(isLoading);
+      },
+    );
+  }
+
+  Widget _buildForm(bool isLoading) {
+    final isEnabled = _isFormFilled && !isLoading;
+
+    return SingleChildScrollView(
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 24.h),
+      child: Form(
+        key: _formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            ChangePasswordFormFields(
+              oldPasswordController: _oldPasswordController,
+              newPasswordController: _newPasswordController,
+              confirmPasswordController: _confirmPasswordController,
+            ),
+            SizedBox(height: 32.h),
+            ChangePasswordSubmitButton(
+              isEnabled: isEnabled,
+              isLoading: isLoading,
+              onPressed: _onSubmit,
+            ),
+          ],
         ),
       ),
     );
+  }
+
+  void _onSubmit() {
+    if (_formKey.currentState!.validate()) {
+      _cubit.doIntent(
+        SubmitChangePasswordEvent(
+          ChangePasswordRequest(
+            oldPassword: _oldPasswordController.text,
+            password: _newPasswordController.text,
+            rePassword: _confirmPasswordController.text,
+          ),
+        ),
+      );
+    }
   }
 }

@@ -34,17 +34,7 @@ class ChangePasswordFormFields extends StatelessWidget {
               v == null || v.isEmpty ? locale.requiredField : null,
         ),
         SizedBox(height: 16.h),
-        _buildField(
-          controller: confirmPasswordController,
-          label: locale.confirmPasswordLabel,
-          validator: (v) {
-            if (v == null || v.isEmpty) return locale.requiredField;
-            if (v != newPasswordController.text) {
-              return locale.passwordNotMatched;
-            }
-            return null;
-          },
-        ),
+        _buildConfirmField(locale),
       ],
     );
   }
@@ -62,6 +52,22 @@ class ChangePasswordFormFields extends StatelessWidget {
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.r)),
       ),
       validator: validator,
+    );
+  }
+
+  Widget _buildConfirmField(AppLocalizations locale) {
+    return TextFormField(
+      controller: confirmPasswordController,
+      obscureText: true,
+      decoration: InputDecoration(
+        labelText: locale.confirmPasswordLabel,
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.r)),
+      ),
+      validator: (v) {
+        if (v == null || v.isEmpty) return locale.requiredField;
+        if (v != newPasswordController.text) return locale.passwordNotMatched;
+        return null;
+      },
     );
   }
 }

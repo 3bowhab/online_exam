@@ -6,10 +6,10 @@ class MainLayoutView extends StatefulWidget {
   const MainLayoutView({super.key});
 
   @override
-  State<MainLayoutView> createState() => _MainLayoutViewState();
+  State<MainLayoutView> createState() => MainLayoutViewState();
 }
 
-class _MainLayoutViewState extends State<MainLayoutView> {
+class MainLayoutViewState extends State<MainLayoutView> {
   int _currentIndex = 2;
 
   final List<Widget> _pages = const [

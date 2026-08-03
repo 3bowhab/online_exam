@@ -126,101 +126,111 @@ class ProfileViewState extends State<ProfileView> {
   @override
   Widget build(BuildContext context) {
     final locale = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
 
     return BlocProvider.value(
       value: _cubit,
       child: Scaffold(
         appBar: AppBar(title: Text(locale.profileTitle), centerTitle: false),
-        body: BlocConsumer<ProfileCubit, ProfileState>(
-          listener: (context, state) {
-            if (state.profileDataState.status == StateStatus.success &&
-                state.profileDataState.data != null) {
-              final user = state.profileDataState.data!;
-              _originalUser = user;
-              _usernameController.text = user.username;
-              _firstNameController.text = user.firstName;
-              _lastNameController.text = user.lastName;
-              _emailController.text = user.email;
-              _phoneController.text = user.phone;
+        body: _buildBlocConsumer(locale),
+      ),
+    );
+  }
 
-              setState(() {
-                _isModified = false;
-              });
-            }
-          },
-          builder: (context, state) {
-            if (state.profileDataState.status == StateStatus.loading) {
-              return Center(
-                child: CircularProgressIndicator(
-                  color: theme.colorScheme.primary,
-                ),
-              );
-            }
+  Widget _buildBlocConsumer(AppLocalizations locale) {
+    final theme = Theme.of(context);
 
-            return SingleChildScrollView(
-              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const ProfileAvatar(),
-                  SizedBox(height: 20.h),
-                  _buildTextField(locale.usernameLabel, _usernameController),
-                  SizedBox(height: 12.h),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _buildTextField(
-                          locale.firstNameLabel,
-                          _firstNameController,
-                        ),
-                      ),
-                      SizedBox(width: 12.w),
-                      Expanded(
-                        child: _buildTextField(
-                          locale.lastNameLabel,
-                          _lastNameController,
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 12.h),
-                  _buildTextField(locale.emailLabel, _emailController),
-                  SizedBox(height: 12.h),
-                  const ProfilePasswordField(),
-                  SizedBox(height: 12.h),
-                  _buildTextField(locale.phoneNumberLabel, _phoneController),
-                  SizedBox(height: 24.h),
-                  ProfileUpdateButton(
-                    isModified: _isModified,
-                    state: state,
-                    onPressed: () {
-                      _cubit.doIntent(
-                        SubmitEditProfileEvent(
-                          EditProfileRequest(
-                            username: _usernameController.text,
-                            firstName: _firstNameController.text,
-                            lastName: _lastNameController.text,
-                            email: _emailController.text,
-                            phone: _phoneController.text,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                  SizedBox(height: 12.h),
-                  ProfileLogoutButton(
-                    state: state,
-                    onPressed: () => _cubit.doIntent(SubmitLogoutEvent()),
-                  ),
-                  SizedBox(height: 16.h),
-                  const ProfileLanguageSelector(),
-                  SizedBox(height: 16.h),
-                  const ProfileThemeSelector(),
-                ],
-              ),
-            );
-          },
+    return BlocConsumer<ProfileCubit, ProfileState>(
+      listener: _onStateListener,
+      builder: (context, state) {
+        if (state.profileDataState.status == StateStatus.loading) {
+          return Center(
+            child: CircularProgressIndicator(color: theme.colorScheme.primary),
+          );
+        }
+        return _buildProfileContent(locale, theme, state);
+      },
+    );
+  }
+
+  void _onStateListener(BuildContext context, ProfileState state) {
+    if (state.profileDataState.status == StateStatus.success &&
+        state.profileDataState.data != null) {
+      final user = state.profileDataState.data!;
+      _originalUser = user;
+      _usernameController.text = user.username;
+      _firstNameController.text = user.firstName;
+      _lastNameController.text = user.lastName;
+      _emailController.text = user.email;
+      _phoneController.text = user.phone;
+
+      setState(() => _isModified = false);
+    }
+  }
+
+  Widget _buildProfileContent(
+    AppLocalizations locale,
+    ThemeData theme,
+    ProfileState state,
+  ) {
+    return SingleChildScrollView(
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const ProfileAvatar(),
+          SizedBox(height: 20.h),
+          _buildTextField(locale.usernameLabel, _usernameController),
+          SizedBox(height: 12.h),
+          _buildNameRow(locale),
+          SizedBox(height: 12.h),
+          _buildTextField(locale.emailLabel, _emailController),
+          SizedBox(height: 12.h),
+          const ProfilePasswordField(),
+          SizedBox(height: 12.h),
+          _buildTextField(locale.phoneNumberLabel, _phoneController),
+          SizedBox(height: 24.h),
+          ProfileUpdateButton(
+            isModified: _isModified,
+            state: state,
+            onPressed: _onUpdatePressed,
+          ),
+          SizedBox(height: 12.h),
+          ProfileLogoutButton(
+            state: state,
+            onPressed: () => _cubit.doIntent(SubmitLogoutEvent()),
+          ),
+          SizedBox(height: 16.h),
+          const ProfileLanguageSelector(),
+          SizedBox(height: 16.h),
+          const ProfileThemeSelector(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNameRow(AppLocalizations locale) {
+    return Row(
+      children: [
+        Expanded(
+          child: _buildTextField(locale.firstNameLabel, _firstNameController),
+        ),
+        SizedBox(width: 12.w),
+        Expanded(
+          child: _buildTextField(locale.lastNameLabel, _lastNameController),
+        ),
+      ],
+    );
+  }
+
+  void _onUpdatePressed() {
+    _cubit.doIntent(
+      SubmitEditProfileEvent(
+        EditProfileRequest(
+          username: _usernameController.text,
+          firstName: _firstNameController.text,
+          lastName: _lastNameController.text,
+          email: _emailController.text,
+          phone: _phoneController.text,
         ),
       ),
     );
