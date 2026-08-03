@@ -97,7 +97,7 @@ class ProfileCubit extends BaseCubit<ProfileState> {
           ),
         );
         _uiController.add(
-          ShowProfileSuccessSnackBar('Profile updated successfully'),
+          ShowProfileSuccessSnackBar('profileUpdatedSuccessfully'),
         );
 
       case ApiFailure(:final error):
@@ -130,8 +130,9 @@ class ProfileCubit extends BaseCubit<ProfileState> {
           ),
         );
         _uiController.add(
-          ShowProfileSuccessSnackBar('Password changed successfully'),
+          ShowProfileSuccessSnackBar('passwordChangedSuccessfully'),
         );
+
       case ApiFailure(:final error):
         emitSafe(
           state.copyWith(

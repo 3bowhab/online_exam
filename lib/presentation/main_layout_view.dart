@@ -10,7 +10,7 @@ class MainLayoutView extends StatefulWidget {
 }
 
 class _MainLayoutViewState extends State<MainLayoutView> {
-  int _currentIndex = 2; 
+  int _currentIndex = 2;
 
   final List<Widget> _pages = const [
     Center(child: Text('Explore Screen')),
@@ -25,32 +25,59 @@ class _MainLayoutViewState extends State<MainLayoutView> {
 
     return Scaffold(
       body: IndexedStack(index: _currentIndex, children: _pages),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        selectedItemColor: theme.colorScheme.primary,
-        unselectedItemColor: theme.colorScheme.onSurfaceVariant,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        items: [
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.home_outlined),
-            activeIcon: const Icon(Icons.home),
-            label: locale.exploreTab,
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          border: Border(
+            top: BorderSide(
+              color:
+                  theme.inputDecorationTheme.enabledBorder?.borderSide.color
+                      .withValues(alpha: 0.2) ??
+                  theme.dividerColor,
+              width: 1,
+            ),
           ),
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.assignment_outlined),
-            activeIcon: const Icon(Icons.assignment),
-            label: locale.resultTab,
+        ),
+        child: BottomNavigationBar(
+          currentIndex: _currentIndex,
+          backgroundColor: theme.scaffoldBackgroundColor,
+          elevation: 0,
+          type: BottomNavigationBarType.fixed,
+          selectedItemColor: theme.colorScheme.primary,
+          unselectedItemColor: theme.textTheme.bodyMedium?.color?.withValues(
+            alpha: 0.5,
           ),
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.person_outline),
-            activeIcon: const Icon(Icons.person),
-            label: locale.profileTab,
+          selectedLabelStyle: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 12,
+            color: theme.colorScheme.primary,
           ),
-        ],
+          unselectedLabelStyle: TextStyle(
+            fontSize: 12,
+            color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
+          ),
+          onTap: (index) {
+            setState(() {
+              _currentIndex = index;
+            });
+          },
+          items: [
+            BottomNavigationBarItem(
+              icon: const Icon(Icons.home_outlined),
+              activeIcon: const Icon(Icons.home_outlined),
+              label: locale.exploreTab,
+            ),
+            BottomNavigationBarItem(
+              icon: const Icon(Icons.assignment_outlined),
+              activeIcon: const Icon(Icons.assignment_outlined),
+              label: locale.resultTab,
+            ),
+            BottomNavigationBarItem(
+              icon: const Icon(Icons.person_outline),
+              activeIcon: const Icon(Icons.person_outlined),
+              label: locale.profileTab,
+            ),
+          ],
+        ),
       ),
     );
   }

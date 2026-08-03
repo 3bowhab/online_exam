@@ -9,12 +9,15 @@ import 'package:online_exam/data/models/profile/change_password_request.dart';
 import 'package:online_exam/presentation/profile/cubit/profile_cubit.dart';
 import 'package:online_exam/presentation/profile/cubit/profile_events.dart';
 import 'package:online_exam/presentation/profile/cubit/profile_state.dart';
+import 'package:online_exam/presentation/profile/widgets/change_password_form_fields.dart';
+import 'package:online_exam/presentation/profile/widgets/change_password_submit_button.dart';
 
 class ProfileResetPasswordView extends StatefulWidget {
   const ProfileResetPasswordView({super.key});
 
   @override
-  State<ProfileResetPasswordView> createState() => _ProfileResetPasswordViewState();
+  State<ProfileResetPasswordView> createState() =>
+      _ProfileResetPasswordViewState();
 }
 
 class _ProfileResetPasswordViewState extends State<ProfileResetPasswordView> {
@@ -24,8 +27,35 @@ class _ProfileResetPasswordViewState extends State<ProfileResetPasswordView> {
   final _confirmPasswordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
+  bool _isFormFilled = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _oldPasswordController.addListener(_checkIfFormFilled);
+    _newPasswordController.addListener(_checkIfFormFilled);
+    _confirmPasswordController.addListener(_checkIfFormFilled);
+  }
+
+  void _checkIfFormFilled() {
+    final isFilled =
+        _oldPasswordController.text.trim().isNotEmpty &&
+        _newPasswordController.text.trim().isNotEmpty &&
+        _confirmPasswordController.text.trim().isNotEmpty;
+
+    if (isFilled != _isFormFilled) {
+      setState(() {
+        _isFormFilled = isFilled;
+      });
+    }
+  }
+
   @override
   void dispose() {
+    _oldPasswordController.removeListener(_checkIfFormFilled);
+    _newPasswordController.removeListener(_checkIfFormFilled);
+    _confirmPasswordController.removeListener(_checkIfFormFilled);
+
     _oldPasswordController.dispose();
     _newPasswordController.dispose();
     _confirmPasswordController.dispose();
@@ -35,7 +65,6 @@ class _ProfileResetPasswordViewState extends State<ProfileResetPasswordView> {
   @override
   Widget build(BuildContext context) {
     final locale = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
 
     return BlocProvider.value(
       value: _cubit,
@@ -50,12 +79,13 @@ class _ProfileResetPasswordViewState extends State<ProfileResetPasswordView> {
         body: BlocConsumer<ProfileCubit, ProfileState>(
           listener: (context, state) {
             if (state.changePasswordState.status == StateStatus.success) {
-              context.pop(); // العودة لشاشة البروفايل عند التغير بنجاح
+              context.pop();
             }
           },
           builder: (context, state) {
             final isLoading =
                 state.changePasswordState.status == StateStatus.loading;
+            final isEnabled = _isFormFilled && !isLoading;
 
             return SingleChildScrollView(
               padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 24.h),
@@ -64,87 +94,28 @@ class _ProfileResetPasswordViewState extends State<ProfileResetPasswordView> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    TextFormField(
-                      controller: _oldPasswordController,
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        labelText: locale.currentPasswordLabel,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.r),
-                        ),
-                      ),
-                      validator: (v) =>
-                          v == null || v.isEmpty ? locale.requiredField : null,
-                    ),
-                    SizedBox(height: 16.h),
-                    TextFormField(
-                      controller: _newPasswordController,
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        labelText: locale.newPasswordLabel,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.r),
-                        ),
-                      ),
-                      validator: (v) =>
-                          v == null || v.isEmpty ? locale.requiredField : null,
-                    ),
-                    SizedBox(height: 16.h),
-                    TextFormField(
-                      controller: _confirmPasswordController,
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        labelText: locale.confirmPasswordLabel,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.r),
-                        ),
-                      ),
-                      validator: (v) {
-                        if (v == null || v.isEmpty) return locale.requiredField;
-                        if (v != _newPasswordController.text) {
-                          return locale.passwordNotMatched;
-                        }
-                        return null;
-                      },
+                    ChangePasswordFormFields(
+                      oldPasswordController: _oldPasswordController,
+                      newPasswordController: _newPasswordController,
+                      confirmPasswordController: _confirmPasswordController,
                     ),
                     SizedBox(height: 32.h),
-                    SizedBox(
-                      height: 48.h,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: theme.colorScheme.primary,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.r),
-                          ),
-                        ),
-                        onPressed: isLoading
-                            ? null
-                            : () {
-                                if (_formKey.currentState!.validate()) {
-                                  _cubit.doIntent(
-                                    SubmitChangePasswordEvent(
-                                      ChangePasswordRequest(
-                                        oldPassword:
-                                            _oldPasswordController.text,
-                                        password: _newPasswordController.text,
-                                        rePassword:
-                                            _confirmPasswordController.text,
-                                      ),
-                                    ),
-                                  );
-                                }
-                              },
-                        child: isLoading
-                            ? CircularProgressIndicator(
-                                color: theme.colorScheme.onPrimary,
-                              )
-                            : Text(
-                                locale.updateButton,
-                                style: TextStyle(
-                                  color: theme.colorScheme.onPrimary,
-                                ),
+                    ChangePasswordSubmitButton(
+                      isEnabled: isEnabled,
+                      isLoading: isLoading,
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          _cubit.doIntent(
+                            SubmitChangePasswordEvent(
+                              ChangePasswordRequest(
+                                oldPassword: _oldPasswordController.text,
+                                password: _newPasswordController.text,
+                                rePassword: _confirmPasswordController.text,
                               ),
-                      ),
+                            ),
+                          );
+                        }
+                      },
                     ),
                   ],
                 ),

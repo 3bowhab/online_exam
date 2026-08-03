@@ -93,5 +93,9 @@
   "profileUpdatedSuccess": "Profile updated successfully",
   "@profileUpdatedSuccess": {},
   "passwordChangedSuccess": "Password changed successfully",
-  "@passwordChangedSuccess": {}
+  "@passwordChangedSuccess": {},
+  "profileUpdatedSuccessfully": "Profile updated successfully",
+  "@profileUpdatedSuccessfully": {},
+  "passwordChangedSuccessfully": "Password changed successfully",
+  "@passwordChangedSuccessfully": {}
 }

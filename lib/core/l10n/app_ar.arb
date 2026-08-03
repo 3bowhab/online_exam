@@ -46,5 +46,7 @@
   "requiredField": "هذا الحقل مطلوب",
   "passwordNotMatched": "كلمة المرور غير متطابقة",
   "profileUpdatedSuccess": "تم تحديث البيانات بنجاح",
-  "passwordChangedSuccess": "تم تغيير كلمة المرور بنجاح"
+  "passwordChangedSuccess": "تم تغيير كلمة المرور بنجاح",
+  "profileUpdatedSuccessfully": "تم تحديث الملف الشخصي بنجاح",
+  "passwordChangedSuccessfully": "تم تغيير كلمة المرور بنجاح"
 }
