@@ -19,9 +19,7 @@ class ProfilePasswordField extends StatelessWidget {
         labelText: locale.passwordLabel,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.r)),
         suffixIcon: TextButton(
-          onPressed: () {
-            context.push(RoutersConstants.profileResetPassword);
-          },
+          onPressed: () => context.push(RoutersConstants.profileResetPassword),
           child: Text(
             locale.changePasswordButton,
             style: TextStyle(color: theme.colorScheme.primary),

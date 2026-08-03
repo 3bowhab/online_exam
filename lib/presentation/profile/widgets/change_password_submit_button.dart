@@ -34,13 +34,18 @@ class ChangePasswordSubmitButton extends StatelessWidget {
           ),
         ),
         onPressed: isEnabled ? onPressed : null,
-        child: isLoading
-            ? CircularProgressIndicator(color: theme.colorScheme.onPrimary)
-            : Text(
-                locale.updateButton,
-                style: TextStyle(color: theme.colorScheme.onPrimary),
-              ),
+        child: _buildChild(theme, locale),
       ),
+    );
+  }
+
+  Widget _buildChild(ThemeData theme, AppLocalizations locale) {
+    if (isLoading) {
+      return CircularProgressIndicator(color: theme.colorScheme.onPrimary);
+    }
+    return Text(
+      locale.updateButton,
+      style: TextStyle(color: theme.colorScheme.onPrimary),
     );
   }
 }

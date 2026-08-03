@@ -23,24 +23,28 @@ class ProfileLanguageSelector extends StatelessWidget {
           ),
         ),
         SizedBox(height: 8.h),
-        Row(
-          children: [
-            Expanded(
-              child: SelectableCard(
-                title: 'English',
-                isSelected: currentLang == 'en',
-                onTap: () => provider.changeLanguage('en'),
-              ),
-            ),
-            SizedBox(width: 12.w),
-            Expanded(
-              child: SelectableCard(
-                title: 'العربية',
-                isSelected: currentLang == 'ar',
-                onTap: () => provider.changeLanguage('ar'),
-              ),
-            ),
-          ],
+        _buildCardsRow(provider, currentLang),
+      ],
+    );
+  }
+
+  Widget _buildCardsRow(AppConfigProvider provider, String currentLang) {
+    return Row(
+      children: [
+        Expanded(
+          child: SelectableCard(
+            title: 'English',
+            isSelected: currentLang == 'en',
+            onTap: () => provider.changeLanguage('en'),
+          ),
+        ),
+        SizedBox(width: 12.w),
+        Expanded(
+          child: SelectableCard(
+            title: 'العربية',
+            isSelected: currentLang == 'ar',
+            onTap: () => provider.changeLanguage('ar'),
+          ),
         ),
       ],
     );

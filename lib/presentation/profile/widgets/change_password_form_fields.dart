@@ -20,41 +20,23 @@ class ChangePasswordFormFields extends StatelessWidget {
 
     return Column(
       children: [
-        TextFormField(
+        _buildField(
           controller: oldPasswordController,
-          obscureText: true,
-          decoration: InputDecoration(
-            labelText: locale.currentPasswordLabel,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8.r),
-            ),
-          ),
+          label: locale.currentPasswordLabel,
           validator: (v) =>
               v == null || v.isEmpty ? locale.requiredField : null,
         ),
         SizedBox(height: 16.h),
-        TextFormField(
+        _buildField(
           controller: newPasswordController,
-          obscureText: true,
-          decoration: InputDecoration(
-            labelText: locale.newPasswordLabel,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8.r),
-            ),
-          ),
+          label: locale.newPasswordLabel,
           validator: (v) =>
               v == null || v.isEmpty ? locale.requiredField : null,
         ),
         SizedBox(height: 16.h),
-        TextFormField(
+        _buildField(
           controller: confirmPasswordController,
-          obscureText: true,
-          decoration: InputDecoration(
-            labelText: locale.confirmPasswordLabel,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8.r),
-            ),
-          ),
+          label: locale.confirmPasswordLabel,
           validator: (v) {
             if (v == null || v.isEmpty) return locale.requiredField;
             if (v != newPasswordController.text) {
@@ -64,6 +46,22 @@ class ChangePasswordFormFields extends StatelessWidget {
           },
         ),
       ],
+    );
+  }
+
+  Widget _buildField({
+    required TextEditingController controller,
+    required String label,
+    required FormFieldValidator<String> validator,
+  }) {
+    return TextFormField(
+      controller: controller,
+      obscureText: true,
+      decoration: InputDecoration(
+        labelText: label,
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.r)),
+      ),
+      validator: validator,
     );
   }
 }

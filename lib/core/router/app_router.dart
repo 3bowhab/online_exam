@@ -7,7 +7,7 @@ import 'package:online_exam/presentation/auth/views/reset_password_view.dart'
     as auth_reset;
 import 'package:online_exam/presentation/auth/views/verify_code_view.dart';
 import 'package:online_exam/presentation/main_layout_view.dart';
-import 'package:online_exam/presentation/profile/view/reset_password_view.dart';
+import 'package:online_exam/presentation/profile/view/profile_reset_password_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 @singleton

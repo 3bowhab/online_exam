@@ -25,60 +25,40 @@ class _MainLayoutViewState extends State<MainLayoutView> {
 
     return Scaffold(
       body: IndexedStack(index: _currentIndex, children: _pages),
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          border: Border(
-            top: BorderSide(
-              color:
-                  theme.inputDecorationTheme.enabledBorder?.borderSide.color
-                      .withValues(alpha: 0.2) ??
-                  theme.dividerColor,
-              width: 1,
-            ),
-          ),
-        ),
-        child: BottomNavigationBar(
-          currentIndex: _currentIndex,
-          backgroundColor: theme.scaffoldBackgroundColor,
-          elevation: 0,
-          type: BottomNavigationBarType.fixed,
-          selectedItemColor: theme.colorScheme.primary,
-          unselectedItemColor: theme.textTheme.bodyMedium?.color?.withValues(
-            alpha: 0.5,
-          ),
-          selectedLabelStyle: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 12,
-            color: theme.colorScheme.primary,
-          ),
-          unselectedLabelStyle: TextStyle(
-            fontSize: 12,
-            color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
-          ),
-          onTap: (index) {
-            setState(() {
-              _currentIndex = index;
-            });
-          },
-          items: [
-            BottomNavigationBarItem(
-              icon: const Icon(Icons.home_outlined),
-              activeIcon: const Icon(Icons.home_outlined),
-              label: locale.exploreTab,
-            ),
-            BottomNavigationBarItem(
-              icon: const Icon(Icons.assignment_outlined),
-              activeIcon: const Icon(Icons.assignment_outlined),
-              label: locale.resultTab,
-            ),
-            BottomNavigationBarItem(
-              icon: const Icon(Icons.person_outline),
-              activeIcon: const Icon(Icons.person_outlined),
-              label: locale.profileTab,
-            ),
-          ],
-        ),
+      bottomNavigationBar: _buildBottomNavigationBar(locale, theme),
+    );
+  }
+
+  Widget _buildBottomNavigationBar(AppLocalizations locale, ThemeData theme) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border(top: BorderSide(color: theme.dividerColor, width: 1)),
+      ),
+      child: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: (index) => setState(() => _currentIndex = index),
+        items: _buildNavItems(locale),
       ),
     );
+  }
+
+  List<BottomNavigationBarItem> _buildNavItems(AppLocalizations locale) {
+    return [
+      BottomNavigationBarItem(
+        icon: const Icon(Icons.home_outlined),
+        activeIcon: const Icon(Icons.home),
+        label: locale.exploreTab,
+      ),
+      BottomNavigationBarItem(
+        icon: const Icon(Icons.assignment_outlined),
+        activeIcon: const Icon(Icons.assignment),
+        label: locale.resultTab,
+      ),
+      BottomNavigationBarItem(
+        icon: const Icon(Icons.person_outline),
+        activeIcon: const Icon(Icons.person),
+        label: locale.profileTab,
+      ),
+    ];
   }
 }

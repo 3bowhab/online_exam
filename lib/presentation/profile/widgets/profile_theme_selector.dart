@@ -24,26 +24,34 @@ class ProfileThemeSelector extends StatelessWidget {
           ),
         ),
         SizedBox(height: 8.h),
-        Row(
-          children: [
-            Expanded(
-              child: SelectableCard(
-                title: isArabic ? 'فاتح' : 'Light',
-                icon: Icons.light_mode_outlined,
-                isSelected: currentTheme == ThemeOptions.light,
-                onTap: () => provider.changeTheme(ThemeOptions.light),
-              ),
-            ),
-            SizedBox(width: 12.w),
-            Expanded(
-              child: SelectableCard(
-                title: isArabic ? 'داكن' : 'Dark',
-                icon: Icons.dark_mode_outlined,
-                isSelected: currentTheme == ThemeOptions.dark,
-                onTap: () => provider.changeTheme(ThemeOptions.dark),
-              ),
-            ),
-          ],
+        _buildThemeCardsRow(provider, currentTheme, isArabic),
+      ],
+    );
+  }
+
+  Widget _buildThemeCardsRow(
+    AppConfigProvider provider,
+    ThemeOptions currentTheme,
+    bool isArabic,
+  ) {
+    return Row(
+      children: [
+        Expanded(
+          child: SelectableCard(
+            title: isArabic ? 'فاتح' : 'Light',
+            icon: Icons.light_mode_outlined,
+            isSelected: currentTheme == ThemeOptions.light,
+            onTap: () => provider.changeTheme(ThemeOptions.light),
+          ),
+        ),
+        SizedBox(width: 12.w),
+        Expanded(
+          child: SelectableCard(
+            title: isArabic ? 'داكن' : 'Dark',
+            icon: Icons.dark_mode_outlined,
+            isSelected: currentTheme == ThemeOptions.dark,
+            onTap: () => provider.changeTheme(ThemeOptions.dark),
+          ),
         ),
       ],
     );
