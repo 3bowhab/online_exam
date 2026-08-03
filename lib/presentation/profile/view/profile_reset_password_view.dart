@@ -17,10 +17,10 @@ class ProfileResetPasswordView extends StatefulWidget {
 
   @override
   State<ProfileResetPasswordView> createState() =>
-      _ProfileResetPasswordViewState();
+      ProfileResetPasswordViewState();
 }
 
-class _ProfileResetPasswordViewState extends State<ProfileResetPasswordView> {
+class ProfileResetPasswordViewState extends State<ProfileResetPasswordView> {
   final ProfileCubit _cubit = getIt<ProfileCubit>();
   final _oldPasswordController = TextEditingController();
   final _newPasswordController = TextEditingController();

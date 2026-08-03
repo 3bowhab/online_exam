@@ -17,26 +17,25 @@ class ChangePasswordFormFields extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final locale = AppLocalizations.of(context)!;
+    return Column(children: _buildFieldsList(locale));
+  }
 
-    return Column(
-      children: [
-        _buildField(
-          controller: oldPasswordController,
-          label: locale.currentPasswordLabel,
-          validator: (v) =>
-              v == null || v.isEmpty ? locale.requiredField : null,
-        ),
-        SizedBox(height: 16.h),
-        _buildField(
-          controller: newPasswordController,
-          label: locale.newPasswordLabel,
-          validator: (v) =>
-              v == null || v.isEmpty ? locale.requiredField : null,
-        ),
-        SizedBox(height: 16.h),
-        _buildConfirmField(locale),
-      ],
-    );
+  List<Widget> _buildFieldsList(AppLocalizations locale) {
+    return [
+      _buildField(
+        controller: oldPasswordController,
+        label: locale.currentPasswordLabel,
+        validator: (v) => v == null || v.isEmpty ? locale.requiredField : null,
+      ),
+      SizedBox(height: 16.h),
+      _buildField(
+        controller: newPasswordController,
+        label: locale.newPasswordLabel,
+        validator: (v) => v == null || v.isEmpty ? locale.requiredField : null,
+      ),
+      SizedBox(height: 16.h),
+      _buildConfirmField(locale),
+    ];
   }
 
   Widget _buildField({
