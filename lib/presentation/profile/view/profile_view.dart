@@ -7,14 +7,15 @@ import 'package:online_exam/core/base/cubit/state_status.dart';
 import 'package:online_exam/core/di/di.dart';
 import 'package:online_exam/core/l10n/app_localizations.dart';
 import 'package:online_exam/core/router/routers_constants.dart';
+import 'package:online_exam/core/utils/validators.dart';
 import 'package:online_exam/data/models/profile/edit_profile_request.dart';
 import 'package:online_exam/domain/entities/user_entity.dart';
 import 'package:online_exam/presentation/profile/cubit/profile_cubit.dart';
+import 'package:online_exam/presentation/profile/widgets/profile_logout_button.dart';
 import 'package:online_exam/presentation/profile/cubit/profile_events.dart';
 import 'package:online_exam/presentation/profile/cubit/profile_state.dart';
 import 'package:online_exam/presentation/profile/widgets/profile_avatar.dart';
 import 'package:online_exam/presentation/profile/widgets/profile_language_selector.dart';
-import 'package:online_exam/presentation/profile/widgets/profile_logout_button.dart';
 import 'package:online_exam/presentation/profile/widgets/profile_password_field.dart';
 import 'package:online_exam/presentation/profile/widgets/profile_theme_selector.dart';
 import 'package:online_exam/presentation/profile/widgets/profile_update_button.dart';
@@ -27,8 +28,9 @@ class ProfileView extends StatefulWidget {
 }
 
 class ProfileViewState extends State<ProfileView> {
-  final ProfileCubit _cubit = getIt<ProfileCubit>();
-  late StreamSubscription<ProfileUiEvents> _uiSubscription;
+  StreamSubscription<ProfileUiEvents>? _uiSubscription;
+
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _firstNameController = TextEditingController();
@@ -37,20 +39,16 @@ class ProfileViewState extends State<ProfileView> {
   final TextEditingController _phoneController = TextEditingController();
 
   UserEntity? _originalUser;
-  bool _isModified = false;
+  final ValueNotifier<bool> _isModifiedNotifier = ValueNotifier<bool>(false);
 
   @override
   void initState() {
     super.initState();
-    _uiSubscription = _cubit.uiStream.listen(_handleUiEvents);
-
     _usernameController.addListener(_checkIfModified);
     _firstNameController.addListener(_checkIfModified);
     _lastNameController.addListener(_checkIfModified);
     _emailController.addListener(_checkIfModified);
     _phoneController.addListener(_checkIfModified);
-
-    _cubit.doIntent(FetchProfileDataEvent());
   }
 
   void _checkIfModified() {
@@ -63,16 +61,13 @@ class ProfileViewState extends State<ProfileView> {
         _emailController.text != (_originalUser?.email ?? '') ||
         _phoneController.text != (_originalUser?.phone ?? '');
 
-    if (hasChanged != _isModified) {
-      setState(() {
-        _isModified = hasChanged;
-      });
+    if (hasChanged != _isModifiedNotifier.value) {
+      _isModifiedNotifier.value = hasChanged;
     }
   }
 
   void _handleUiEvents(ProfileUiEvents event) {
     if (!mounted) return;
-    final locale = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
 
     switch (event) {
@@ -81,15 +76,9 @@ class ProfileViewState extends State<ProfileView> {
         break;
 
       case ShowProfileSuccessSnackBar(:final message):
-        final translatedMessage = message == 'profileUpdatedSuccessfully'
-            ? locale.profileUpdatedSuccessfully
-            : message == 'passwordChangedSuccessfully'
-            ? locale.passwordChangedSuccessfully
-            : message;
-
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(translatedMessage),
+            content: Text(message),
             backgroundColor: theme.colorScheme.tertiary,
           ),
         );
@@ -108,7 +97,7 @@ class ProfileViewState extends State<ProfileView> {
 
   @override
   void dispose() {
-    _uiSubscription.cancel();
+    _uiSubscription?.cancel();
     _usernameController.removeListener(_checkIfModified);
     _firstNameController.removeListener(_checkIfModified);
     _lastNameController.removeListener(_checkIfModified);
@@ -120,6 +109,7 @@ class ProfileViewState extends State<ProfileView> {
     _lastNameController.dispose();
     _emailController.dispose();
     _phoneController.dispose();
+    _isModifiedNotifier.dispose();
     super.dispose();
   }
 
@@ -127,8 +117,12 @@ class ProfileViewState extends State<ProfileView> {
   Widget build(BuildContext context) {
     final locale = AppLocalizations.of(context)!;
 
-    return BlocProvider.value(
-      value: _cubit,
+    return BlocProvider(
+      create: (context) {
+        final cubit = getIt<ProfileCubit>();
+        _uiSubscription = cubit.uiStream.listen(_handleUiEvents);
+        return cubit..doIntent(FetchProfileDataEvent());
+      },
       child: Scaffold(
         appBar: AppBar(title: Text(locale.profileTitle), centerTitle: false),
         body: _buildBlocConsumer(locale),
@@ -147,7 +141,7 @@ class ProfileViewState extends State<ProfileView> {
             child: CircularProgressIndicator(color: theme.colorScheme.primary),
           );
         }
-        return _buildProfileContent(locale, theme, state);
+        return _buildProfileContent(context, locale, theme, state);
       },
     );
   }
@@ -163,47 +157,69 @@ class ProfileViewState extends State<ProfileView> {
       _emailController.text = user.email;
       _phoneController.text = user.phone;
 
-      setState(() => _isModified = false);
+      _isModifiedNotifier.value = false;
     }
   }
 
   Widget _buildProfileContent(
+    BuildContext context,
     AppLocalizations locale,
     ThemeData theme,
     ProfileState state,
   ) {
     return SingleChildScrollView(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const ProfileAvatar(),
-          SizedBox(height: 20.h),
-          _buildTextField(locale.usernameLabel, _usernameController),
-          SizedBox(height: 12.h),
-          _buildNameRow(locale),
-          SizedBox(height: 12.h),
-          _buildTextField(locale.emailLabel, _emailController),
-          SizedBox(height: 12.h),
-          const ProfilePasswordField(),
-          SizedBox(height: 12.h),
-          _buildTextField(locale.phoneNumberLabel, _phoneController),
-          SizedBox(height: 24.h),
-          ProfileUpdateButton(
-            isModified: _isModified,
-            state: state,
-            onPressed: _onUpdatePressed,
-          ),
-          SizedBox(height: 12.h),
-          ProfileLogoutButton(
-            state: state,
-            onPressed: () => _cubit.doIntent(SubmitLogoutEvent()),
-          ),
-          SizedBox(height: 16.h),
-          const ProfileLanguageSelector(),
-          SizedBox(height: 16.h),
-          const ProfileThemeSelector(),
-        ],
+      child: Form(
+        key: _formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const ProfileAvatar(),
+            SizedBox(height: 20.h),
+            _buildTextField(
+              locale.usernameLabel,
+              _usernameController,
+              validator: (v) => Validators.validateUsername(v, locale),
+            ),
+            SizedBox(height: 12.h),
+            _buildNameRow(locale),
+            SizedBox(height: 12.h),
+            _buildTextField(
+              locale.emailLabel,
+              _emailController,
+              validator: (v) => Validators.validateEmail(v, locale),
+            ),
+            SizedBox(height: 12.h),
+            const ProfilePasswordField(),
+            SizedBox(height: 12.h),
+            _buildTextField(
+              locale.phoneNumberLabel,
+              _phoneController,
+              validator: (v) => Validators.validatePhone(v, locale),
+            ),
+            SizedBox(height: 24.h),
+            ValueListenableBuilder<bool>(
+              valueListenable: _isModifiedNotifier,
+              builder: (context, isModified, child) {
+                return ProfileUpdateButton(
+                  isModified: isModified,
+                  state: state,
+                  onPressed: () => _onUpdatePressed(context),
+                );
+              },
+            ),
+            SizedBox(height: 12.h),
+            ProfileLogoutButton(
+              state: state,
+              onPressed: () =>
+                  context.read<ProfileCubit>().doIntent(SubmitLogoutEvent()),
+            ),
+            SizedBox(height: 16.h),
+            const ProfileLanguageSelector(),
+            SizedBox(height: 16.h),
+            const ProfileThemeSelector(),
+          ],
+        ),
       ),
     );
   }
@@ -212,33 +228,48 @@ class ProfileViewState extends State<ProfileView> {
     return Row(
       children: [
         Expanded(
-          child: _buildTextField(locale.firstNameLabel, _firstNameController),
+          child: _buildTextField(
+            locale.firstNameLabel,
+            _firstNameController,
+            validator: (v) => Validators.validateRequired(v, locale),
+          ),
         ),
         SizedBox(width: 12.w),
         Expanded(
-          child: _buildTextField(locale.lastNameLabel, _lastNameController),
+          child: _buildTextField(
+            locale.lastNameLabel,
+            _lastNameController,
+            validator: (v) => Validators.validateRequired(v, locale),
+          ),
         ),
       ],
     );
   }
 
-  void _onUpdatePressed() {
-    _cubit.doIntent(
-      SubmitEditProfileEvent(
-        EditProfileRequest(
-          username: _usernameController.text,
-          firstName: _firstNameController.text,
-          lastName: _lastNameController.text,
-          email: _emailController.text,
-          phone: _phoneController.text,
+  void _onUpdatePressed(BuildContext context) {
+    if (_formKey.currentState!.validate()) {
+      context.read<ProfileCubit>().doIntent(
+        SubmitEditProfileEvent(
+          EditProfileRequest(
+            username: _usernameController.text,
+            firstName: _firstNameController.text,
+            lastName: _lastNameController.text,
+            email: _emailController.text,
+            phone: _phoneController.text,
+          ),
         ),
-      ),
-    );
+      );
+    }
   }
 
-  Widget _buildTextField(String label, TextEditingController controller) {
+  Widget _buildTextField(
+    String label,
+    TextEditingController controller, {
+    FormFieldValidator<String>? validator,
+  }) {
     return TextFormField(
       controller: controller,
+      validator: validator,
       decoration: InputDecoration(
         labelText: label,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.r)),

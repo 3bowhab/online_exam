@@ -21,13 +21,12 @@ class ProfileResetPasswordView extends StatefulWidget {
 }
 
 class ProfileResetPasswordViewState extends State<ProfileResetPasswordView> {
-  final ProfileCubit _cubit = getIt<ProfileCubit>();
   final _oldPasswordController = TextEditingController();
   final _newPasswordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  bool _isFormFilled = false;
+  final ValueNotifier<bool> _isFormFilledNotifier = ValueNotifier<bool>(false);
 
   @override
   void initState() {
@@ -43,8 +42,8 @@ class ProfileResetPasswordViewState extends State<ProfileResetPasswordView> {
         _newPasswordController.text.trim().isNotEmpty &&
         _confirmPasswordController.text.trim().isNotEmpty;
 
-    if (isFilled != _isFormFilled) {
-      setState(() => _isFormFilled = isFilled);
+    if (isFilled != _isFormFilledNotifier.value) {
+      _isFormFilledNotifier.value = isFilled;
     }
   }
 
@@ -57,15 +56,15 @@ class ProfileResetPasswordViewState extends State<ProfileResetPasswordView> {
     _oldPasswordController.dispose();
     _newPasswordController.dispose();
     _confirmPasswordController.dispose();
+    _isFormFilledNotifier.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final locale = AppLocalizations.of(context)!;
-
-    return BlocProvider.value(
-      value: _cubit,
+    return BlocProvider(
+      create: (context) => getIt<ProfileCubit>(),
       child: Scaffold(
         appBar: AppBar(
           title: Text(locale.resetPasswordTitle),
@@ -89,14 +88,12 @@ class ProfileResetPasswordViewState extends State<ProfileResetPasswordView> {
       builder: (context, state) {
         final isLoading =
             state.changePasswordState.status == StateStatus.loading;
-        return _buildForm(isLoading);
+        return _buildForm(context, isLoading);
       },
     );
   }
 
-  Widget _buildForm(bool isLoading) {
-    final isEnabled = _isFormFilled && !isLoading;
-
+  Widget _buildForm(BuildContext context, bool isLoading) {
     return SingleChildScrollView(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 24.h),
       child: Form(
@@ -110,10 +107,16 @@ class ProfileResetPasswordViewState extends State<ProfileResetPasswordView> {
               confirmPasswordController: _confirmPasswordController,
             ),
             SizedBox(height: 32.h),
-            ChangePasswordSubmitButton(
-              isEnabled: isEnabled,
-              isLoading: isLoading,
-              onPressed: _onSubmit,
+            ValueListenableBuilder<bool>(
+              valueListenable: _isFormFilledNotifier,
+              builder: (context, isFormFilled, child) {
+                final isEnabled = isFormFilled && !isLoading;
+                return ChangePasswordSubmitButton(
+                  isEnabled: isEnabled,
+                  isLoading: isLoading,
+                  onPressed: () => _onSubmit(context),
+                );
+              },
             ),
           ],
         ),
@@ -121,9 +124,9 @@ class ProfileResetPasswordViewState extends State<ProfileResetPasswordView> {
     );
   }
 
-  void _onSubmit() {
+  void _onSubmit(BuildContext context) {
     if (_formKey.currentState!.validate()) {
-      _cubit.doIntent(
+      context.read<ProfileCubit>().doIntent(
         SubmitChangePasswordEvent(
           ChangePasswordRequest(
             oldPassword: _oldPasswordController.text,

@@ -1,4 +1,5 @@
 import 'package:injectable/injectable.dart';
+import 'package:online_exam/core/constants/prefs_keys.dart';
 import 'package:online_exam/core/network/api_result.dart';
 import 'package:online_exam/core/network/base_response.dart';
 import 'package:online_exam/data/datasource/contract/auth_remote_datasource.dart';
@@ -11,7 +12,7 @@ import 'package:online_exam/domain/entities/user_entity.dart';
 import 'package:online_exam/domain/repository/auth_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-@LazySingleton(as: AuthRepository)
+@Injectable(as: AuthRepository)
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource _remoteDataSource;
   final SharedPreferences _prefs;
@@ -54,7 +55,7 @@ class AuthRepositoryImpl implements AuthRepository {
     switch (result) {
       case ApiSuccess(:final data):
         if (data.token != null && data.token!.isNotEmpty) {
-          await _prefs.setString('token', data.token!);
+          await _prefs.setString(PrefsKeys.token, data.token!);
         }
 
         final userEntity = data.user.toEntity();

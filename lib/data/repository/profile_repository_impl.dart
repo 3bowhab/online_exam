@@ -1,4 +1,5 @@
 import 'package:injectable/injectable.dart';
+import 'package:online_exam/core/constants/prefs_keys.dart';
 import 'package:online_exam/core/network/api_result.dart';
 import 'package:online_exam/data/datasource/contract/profile_remote_datasource.dart';
 import 'package:online_exam/data/mapper/user_mapper.dart';
@@ -8,7 +9,7 @@ import 'package:online_exam/domain/entities/user_entity.dart';
 import 'package:online_exam/domain/repository/profile_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-@LazySingleton(as: ProfileRepository)
+@Injectable(as: ProfileRepository)
 class ProfileRepositoryImpl implements ProfileRepository {
   final ProfileRemoteDataSource _remoteDataSource;
   final SharedPreferences _prefs;
@@ -50,7 +51,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
     switch (result) {
       case ApiSuccess(:final data):
         if (data.token != null && data.token!.isNotEmpty) {
-          await _prefs.setString('token', data.token!);
+          await _prefs.setString(PrefsKeys.token, data.token!);
         }
         return const ApiSuccess(null);
 

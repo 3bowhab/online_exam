@@ -7,31 +7,27 @@ import 'package:online_exam/data/models/profile/change_password_request.dart';
 import 'package:online_exam/data/models/profile/change_password_response.dart';
 import 'package:online_exam/data/models/profile/edit_profile_request.dart';
 import 'package:online_exam/data/models/profile/profile_response.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-@LazySingleton(as: ProfileRemoteDataSource)
+@Injectable(as: ProfileRemoteDataSource)
 class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
   final ApiClient _apiClient;
-  final SharedPreferences _prefs;
 
-  ProfileRemoteDataSourceImpl(this._apiClient, this._prefs);
-
-  String get _getToken => _prefs.getString('token') ?? '';
+  ProfileRemoteDataSourceImpl(this._apiClient);
 
   @override
   Future<ApiResult<ProfileResponse>> getProfileData() {
-    return safeCall(() => _apiClient.getProfileData(_getToken));
+    return safeCall(() => _apiClient.getProfileData());
   }
 
   @override
   Future<ApiResult<ProfileResponse>> editProfile(EditProfileRequest request) {
-    return safeCall(() => _apiClient.editProfile(_getToken, request));
+    return safeCall(() => _apiClient.editProfile(request));
   }
 
   @override
   Future<ApiResult<ChangePasswordResponse>> changePassword(
     ChangePasswordRequest request,
   ) {
-    return safeCall(() => _apiClient.changePassword(_getToken, request));
+    return safeCall(() => _apiClient.changePassword(request));
   }
 }

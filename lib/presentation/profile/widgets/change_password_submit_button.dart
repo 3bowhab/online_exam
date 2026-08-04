@@ -21,33 +21,25 @@ class ChangePasswordSubmitButton extends StatelessWidget {
 
     return SizedBox(
       height: 48.h,
+      width: double.infinity,
       child: ElevatedButton(
-        style: _buildButtonStyle(theme),
         onPressed: isEnabled ? onPressed : null,
         child: _buildChild(theme, locale),
       ),
     );
   }
 
-  ButtonStyle _buildButtonStyle(ThemeData theme) {
-    return ElevatedButton.styleFrom(
-      backgroundColor: isEnabled
-          ? theme.colorScheme.primary
-          : theme.disabledColor,
-      disabledBackgroundColor: theme.colorScheme.onSurface.withValues(
-        alpha: 0.40,
-      ),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.r)),
-    );
-  }
-
   Widget _buildChild(ThemeData theme, AppLocalizations locale) {
     if (isLoading) {
-      return CircularProgressIndicator(color: theme.colorScheme.onPrimary);
+      return SizedBox(
+        height: 24.h,
+        width: 24.w,
+        child: CircularProgressIndicator(
+          strokeWidth: 2.5,
+          color: theme.colorScheme.onPrimary,
+        ),
+      );
     }
-    return Text(
-      locale.updateButton,
-      style: TextStyle(color: theme.colorScheme.onPrimary),
-    );
+    return Text(locale.updateButton);
   }
 }

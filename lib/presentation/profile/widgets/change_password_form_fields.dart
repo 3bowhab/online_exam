@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:online_exam/core/l10n/app_localizations.dart';
+import 'package:online_exam/core/utils/validators.dart';
 
 class ChangePasswordFormFields extends StatelessWidget {
   final TextEditingController oldPasswordController;
@@ -25,13 +26,13 @@ class ChangePasswordFormFields extends StatelessWidget {
       _buildField(
         controller: oldPasswordController,
         label: locale.currentPasswordLabel,
-        validator: (v) => v == null || v.isEmpty ? locale.requiredField : null,
+        validator: (v) => Validators.validateRequired(v, locale),
       ),
       SizedBox(height: 16.h),
       _buildField(
         controller: newPasswordController,
         label: locale.newPasswordLabel,
-        validator: (v) => v == null || v.isEmpty ? locale.requiredField : null,
+        validator: (v) => Validators.validateRequired(v, locale),
       ),
       SizedBox(height: 16.h),
       _buildConfirmField(locale),
@@ -62,11 +63,11 @@ class ChangePasswordFormFields extends StatelessWidget {
         labelText: locale.confirmPasswordLabel,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.r)),
       ),
-      validator: (v) {
-        if (v == null || v.isEmpty) return locale.requiredField;
-        if (v != newPasswordController.text) return locale.passwordNotMatched;
-        return null;
-      },
+      validator: (v) => Validators.validateConfirmPassword(
+        v,
+        newPasswordController.text,
+        locale,
+      ),
     );
   }
 }

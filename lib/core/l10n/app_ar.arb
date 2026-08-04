@@ -48,5 +48,14 @@
   "profileUpdatedSuccess": "تم تحديث البيانات بنجاح",
   "passwordChangedSuccess": "تم تغيير كلمة المرور بنجاح",
   "profileUpdatedSuccessfully": "تم تحديث الملف الشخصي بنجاح",
-  "passwordChangedSuccessfully": "تم تغيير كلمة المرور بنجاح"
+  "passwordChangedSuccessfully": "تم تغيير كلمة المرور بنجاح",
+  "passwordTooShort": "كلمة المرور يجب أن تكون 6 أحرف على الأقل",
+  "invalidPhoneNumber": "يرجى إدخال رقم هاتف صحيح",
+  "usernameTooShort": "اسم المستخدم يجب أن يكون 3 أحرف على الأقل",
+  "themeTitle": "المظهر",
+  "lightTheme": "فاتح",
+  "darkTheme": "داكن",
+  "languageLabel": "اللغة",
+  "english": "الإنجليزية",
+  "arabic": "العربية"
 }

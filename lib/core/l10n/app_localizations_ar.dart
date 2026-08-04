@@ -157,4 +157,31 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get passwordChangedSuccessfully => 'تم تغيير كلمة المرور بنجاح';
+
+  @override
+  String get passwordTooShort => 'كلمة المرور يجب أن تكون 6 أحرف على الأقل';
+
+  @override
+  String get invalidPhoneNumber => 'يرجى إدخال رقم هاتف صحيح';
+
+  @override
+  String get usernameTooShort => 'اسم المستخدم يجب أن يكون 3 أحرف على الأقل';
+
+  @override
+  String get themeTitle => 'المظهر';
+
+  @override
+  String get lightTheme => 'فاتح';
+
+  @override
+  String get darkTheme => 'داكن';
+
+  @override
+  String get languageLabel => 'اللغة';
+
+  @override
+  String get english => 'الإنجليزية';
+
+  @override
+  String get arabic => 'العربية';
 }

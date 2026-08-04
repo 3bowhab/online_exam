@@ -3,6 +3,7 @@ import 'package:injectable/injectable.dart';
 import 'package:online_exam/core/base/cubit/base_cubit.dart';
 import 'package:online_exam/core/base/cubit/base_state.dart';
 import 'package:online_exam/core/base/cubit/state_status.dart';
+import 'package:online_exam/core/constants/app_strings.dart';
 import 'package:online_exam/core/network/api_result.dart';
 import 'package:online_exam/data/models/profile/change_password_request.dart';
 import 'package:online_exam/data/models/profile/edit_profile_request.dart';
@@ -97,7 +98,7 @@ class ProfileCubit extends BaseCubit<ProfileState> {
           ),
         );
         _uiController.add(
-          ShowProfileSuccessSnackBar('profileUpdatedSuccessfully'),
+          ShowProfileSuccessSnackBar(AppStrings.profileUpdatedSuccessfully),
         );
 
       case ApiFailure(:final error):
@@ -130,7 +131,7 @@ class ProfileCubit extends BaseCubit<ProfileState> {
           ),
         );
         _uiController.add(
-          ShowProfileSuccessSnackBar('passwordChangedSuccessfully'),
+          ShowProfileSuccessSnackBar(AppStrings.passwordChangedSuccessfully),
         );
 
       case ApiFailure(:final error):

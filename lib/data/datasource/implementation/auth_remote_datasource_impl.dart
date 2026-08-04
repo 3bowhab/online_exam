@@ -1,4 +1,5 @@
 import 'package:injectable/injectable.dart';
+import 'package:online_exam/core/constants/prefs_keys.dart';
 import 'package:online_exam/core/network/api_result.dart';
 import 'package:online_exam/core/network/base_response.dart';
 import 'package:online_exam/core/network/safe_call.dart';
@@ -12,7 +13,7 @@ import 'package:online_exam/data/models/auth/reset_password_request.dart';
 import 'package:online_exam/data/models/auth/verify_reset_code_request.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-@LazySingleton(as: AuthRemoteDataSource)
+@Injectable(as: AuthRemoteDataSource)
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   final ApiClient _apiClient;
   final SharedPreferences _prefs;
@@ -47,13 +48,12 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   @override
   Future<ApiResult<LogoutResponse>> logout() async {
-    final token = _prefs.getString('token') ?? '';
-    final result = await safeCall(() => _apiClient.logout(token));
+    final result = await safeCall(() => _apiClient.logout());
 
     if (result is ApiSuccess) {
-      await _prefs.remove('token');
-      await _prefs.remove('remember_me');
-      await _prefs.remove('saved_email');
+      await _prefs.remove(PrefsKeys.token);
+      await _prefs.remove(PrefsKeys.rememberMe);
+      await _prefs.remove(PrefsKeys.savedEmail);
     }
 
     return result;

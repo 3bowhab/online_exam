@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
+import 'package:online_exam/core/constants/prefs_keys.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 @injectable
@@ -9,20 +10,22 @@ class AuthInterceptor implements Interceptor {
   AuthInterceptor(this.sharedPreferences);
 
   @override
-  Future<void> onRequest(
+  void onRequest(
     RequestOptions options,
     RequestInterceptorHandler handler,
-  ) async {
-    final token = sharedPreferences.getString('token');
+  ) {
+    final token = sharedPreferences.getString(PrefsKeys.token);
+
     if (token != null && token.isNotEmpty) {
-      options.headers['token'] = token;
+      options.headers[PrefsKeys.token] = token;
     }
-    return handler.next(options);
+
+    handler.next(options);
   }
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
-    return handler.next(err);
+    handler.next(err);
   }
 
   @override
@@ -30,6 +33,6 @@ class AuthInterceptor implements Interceptor {
     Response<dynamic> response,
     ResponseInterceptorHandler handler,
   ) {
-    return handler.next(response);
+    handler.next(response);
   }
 }

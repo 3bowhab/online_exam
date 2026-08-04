@@ -9,29 +9,33 @@ import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 abstract class NetworkModule {
   @singleton
   Dio provideDio(AuthInterceptor authInterceptor) {
-    Dio dio = Dio();
-    dio.options = BaseOptions(
+    final dio = Dio(_createBaseOptions());
+    dio.interceptors.add(authInterceptor);
+
+    if (kDebugMode) {
+      dio.interceptors.add(_createLoggerInterceptor());
+    }
+    return dio;
+  }
+
+  BaseOptions _createBaseOptions() {
+    return BaseOptions(
       baseUrl: ApiConstants.baseUrl,
       connectTimeout: const Duration(seconds: 60),
       receiveTimeout: const Duration(seconds: 60),
       sendTimeout: const Duration(seconds: 60),
     );
+  }
 
-    dio.interceptors.add(authInterceptor);
-
-    if (kDebugMode) {
-      dio.interceptors.add(
-        PrettyDioLogger(
-          requestHeader: true,
-          requestBody: true,
-          responseBody: true,
-          responseHeader: false,
-          error: true,
-          compact: true,
-          maxWidth: 90,
-        ),
-      );
-    }
-    return dio;
+  PrettyDioLogger _createLoggerInterceptor() {
+    return PrettyDioLogger(
+      requestHeader: true,
+      requestBody: true,
+      responseBody: true,
+      responseHeader: false,
+      error: true,
+      compact: true,
+      maxWidth: 90,
+    );
   }
 }
