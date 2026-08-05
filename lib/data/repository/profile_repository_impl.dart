@@ -13,8 +13,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ProfileRepositoryImpl implements ProfileRepository {
   final ProfileRemoteDataSource _remoteDataSource;
   final SharedPreferences _prefs;
+  final UserMapper _userMapper; // 👈 1. إضافة الـ Mapper
 
-  ProfileRepositoryImpl(this._remoteDataSource, this._prefs);
+  ProfileRepositoryImpl(
+    this._remoteDataSource,
+    this._prefs,
+    this._userMapper, // 👈 2. حقنه في الـ Constructor
+  );
 
   @override
   Future<ApiResult<UserEntity>> getProfileData() async {
@@ -22,7 +27,8 @@ class ProfileRepositoryImpl implements ProfileRepository {
 
     switch (result) {
       case ApiSuccess(:final data):
-        final userEntity = data.user.toEntity();
+        // 👈 3. استخدام دالة الـ Mapper
+        final userEntity = _userMapper.mapUserModelToUserEntity(data.user);
         return ApiSuccess(userEntity);
 
       case ApiFailure(:final error):
@@ -36,7 +42,8 @@ class ProfileRepositoryImpl implements ProfileRepository {
 
     switch (result) {
       case ApiSuccess(:final data):
-        final userEntity = data.user.toEntity();
+        // 👈 3. استخدام دالة الـ Mapper
+        final userEntity = _userMapper.mapUserModelToUserEntity(data.user);
         return ApiSuccess(userEntity);
 
       case ApiFailure(:final error):

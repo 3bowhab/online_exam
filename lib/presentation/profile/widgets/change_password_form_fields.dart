@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:online_exam/core/di/di.dart';
 import 'package:online_exam/core/l10n/app_localizations.dart';
 import 'package:online_exam/core/utils/validators.dart';
 
@@ -18,24 +19,29 @@ class ChangePasswordFormFields extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final locale = AppLocalizations.of(context)!;
-    return Column(children: _buildFieldsList(locale));
+    final validators = getIt<Validators>();
+
+    return Column(children: _buildFieldsList(locale, validators));
   }
 
-  List<Widget> _buildFieldsList(AppLocalizations locale) {
+  List<Widget> _buildFieldsList(
+    AppLocalizations locale,
+    Validators validators,
+  ) {
     return [
       _buildField(
         controller: oldPasswordController,
         label: locale.currentPasswordLabel,
-        validator: (v) => Validators.validateRequired(v, locale),
+        validator: (v) => validators.validateRequired(v, locale),
       ),
       SizedBox(height: 16.h),
       _buildField(
         controller: newPasswordController,
         label: locale.newPasswordLabel,
-        validator: (v) => Validators.validateRequired(v, locale),
+        validator: (v) => validators.validatePassword(v, locale),
       ),
       SizedBox(height: 16.h),
-      _buildConfirmField(locale),
+      _buildConfirmField(locale, validators),
     ];
   }
 
@@ -55,7 +61,7 @@ class ChangePasswordFormFields extends StatelessWidget {
     );
   }
 
-  Widget _buildConfirmField(AppLocalizations locale) {
+  Widget _buildConfirmField(AppLocalizations locale, Validators validators) {
     return TextFormField(
       controller: confirmPasswordController,
       obscureText: true,
@@ -63,7 +69,7 @@ class ChangePasswordFormFields extends StatelessWidget {
         labelText: locale.confirmPasswordLabel,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.r)),
       ),
-      validator: (v) => Validators.validateConfirmPassword(
+      validator: (v) => validators.validateConfirmPassword(
         v,
         newPasswordController.text,
         locale,

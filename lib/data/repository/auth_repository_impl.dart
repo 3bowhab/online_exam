@@ -16,8 +16,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource _remoteDataSource;
   final SharedPreferences _prefs;
+  final UserMapper _userMapper;
 
-  AuthRepositoryImpl(this._remoteDataSource, this._prefs);
+  AuthRepositoryImpl(this._remoteDataSource, this._prefs, this._userMapper);
 
   @override
   Future<ApiResult<BaseResponse<void>>> forgotPassword(String email) {
@@ -58,7 +59,7 @@ class AuthRepositoryImpl implements AuthRepository {
           await _prefs.setString(PrefsKeys.token, data.token!);
         }
 
-        final userEntity = data.user.toEntity();
+        final userEntity = _userMapper.mapUserModelToUserEntity(data.user);
         return ApiSuccess(userEntity);
 
       case ApiFailure(:final error):

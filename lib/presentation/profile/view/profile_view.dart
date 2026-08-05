@@ -11,11 +11,11 @@ import 'package:online_exam/core/utils/validators.dart';
 import 'package:online_exam/data/models/profile/edit_profile_request.dart';
 import 'package:online_exam/domain/entities/user_entity.dart';
 import 'package:online_exam/presentation/profile/cubit/profile_cubit.dart';
-import 'package:online_exam/presentation/profile/widgets/profile_logout_button.dart';
 import 'package:online_exam/presentation/profile/cubit/profile_events.dart';
 import 'package:online_exam/presentation/profile/cubit/profile_state.dart';
 import 'package:online_exam/presentation/profile/widgets/profile_avatar.dart';
 import 'package:online_exam/presentation/profile/widgets/profile_language_selector.dart';
+import 'package:online_exam/presentation/profile/widgets/profile_logout_button.dart';
 import 'package:online_exam/presentation/profile/widgets/profile_password_field.dart';
 import 'package:online_exam/presentation/profile/widgets/profile_theme_selector.dart';
 import 'package:online_exam/presentation/profile/widgets/profile_update_button.dart';
@@ -31,6 +31,8 @@ class ProfileViewState extends State<ProfileView> {
   StreamSubscription<ProfileUiEvents>? _uiSubscription;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  final Validators _validators = getIt<Validators>();
 
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _firstNameController = TextEditingController();
@@ -179,7 +181,10 @@ class ProfileViewState extends State<ProfileView> {
             _buildTextField(
               locale.usernameLabel,
               _usernameController,
-              validator: (v) => Validators.validateUsername(v, locale),
+              validator: (v) => _validators.validateUsername(
+                v,
+                locale,
+              ),
             ),
             SizedBox(height: 12.h),
             _buildNameRow(locale),
@@ -187,7 +192,10 @@ class ProfileViewState extends State<ProfileView> {
             _buildTextField(
               locale.emailLabel,
               _emailController,
-              validator: (v) => Validators.validateEmail(v, locale),
+              validator: (v) => _validators.validateEmail(
+                v,
+                locale,
+              ),
             ),
             SizedBox(height: 12.h),
             const ProfilePasswordField(),
@@ -195,7 +203,10 @@ class ProfileViewState extends State<ProfileView> {
             _buildTextField(
               locale.phoneNumberLabel,
               _phoneController,
-              validator: (v) => Validators.validatePhone(v, locale),
+              validator: (v) => _validators.validatePhone(
+                v,
+                locale,
+              ),
             ),
             SizedBox(height: 24.h),
             ValueListenableBuilder<bool>(
@@ -231,7 +242,10 @@ class ProfileViewState extends State<ProfileView> {
           child: _buildTextField(
             locale.firstNameLabel,
             _firstNameController,
-            validator: (v) => Validators.validateRequired(v, locale),
+            validator: (v) => _validators.validateRequired(
+              v,
+              locale,
+            ),
           ),
         ),
         SizedBox(width: 12.w),
@@ -239,7 +253,10 @@ class ProfileViewState extends State<ProfileView> {
           child: _buildTextField(
             locale.lastNameLabel,
             _lastNameController,
-            validator: (v) => Validators.validateRequired(v, locale),
+            validator: (v) => _validators.validateRequired(
+              v,
+              locale,
+            ),
           ),
         ),
       ],

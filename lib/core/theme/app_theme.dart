@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:injectable/injectable.dart';
 import 'package:online_exam/core/theme/app_colors.dart';
 
-abstract class AppTheme {
-  static ThemeData getTheme(AppColors colors, {bool isDark = false}) {
+@injectable
+class AppTheme {
+  ThemeData getTheme(AppColors colors, {bool isDark = false}) {
     return ThemeData(
       brightness: isDark ? Brightness.dark : Brightness.light,
       scaffoldBackgroundColor: colors.white,
@@ -17,7 +19,7 @@ abstract class AppTheme {
     );
   }
 
-  static AppBarTheme _buildAppBarTheme(AppColors colors) => AppBarTheme(
+  AppBarTheme _buildAppBarTheme(AppColors colors) => AppBarTheme(
     backgroundColor: colors.white,
     elevation: 0,
     iconTheme: IconThemeData(color: colors.black),
@@ -28,31 +30,30 @@ abstract class AppTheme {
     ),
   );
 
-  static ColorScheme _buildColorScheme(AppColors colors, bool isDark) =>
-      ColorScheme(
-        brightness: isDark ? Brightness.dark : Brightness.light,
-        primary: colors.blue,
-        onPrimary: colors.white,
-        secondary: colors.blue,
-        onSecondary: colors.white,
-        error: colors.error,
-        onError: colors.white,
-        tertiary: colors.sucess,
-        onTertiary: colors.white,
-        surface: colors.white,
-        onSurface: colors.black,
-        onSurfaceVariant: colors.gray,
-        surfaceContainerHighest: colors.lightBlue,
-        outline: colors.placeHolder,
-      );
+  ColorScheme _buildColorScheme(AppColors colors, bool isDark) => ColorScheme(
+    brightness: isDark ? Brightness.dark : Brightness.light,
+    primary: colors.blue,
+    onPrimary: colors.white,
+    secondary: colors.blue,
+    onSecondary: colors.white,
+    error: colors.error,
+    onError: colors.white,
+    tertiary: colors.sucess,
+    onTertiary: colors.white,
+    surface: colors.white,
+    onSurface: colors.black,
+    onSurfaceVariant: colors.gray,
+    surfaceContainerHighest: colors.lightBlue,
+    outline: colors.placeHolder,
+  );
 
-  static TextTheme _buildTextTheme(AppColors colors) => TextTheme(
+  TextTheme _buildTextTheme(AppColors colors) => TextTheme(
     bodyLarge: TextStyle(color: colors.black),
     bodyMedium: TextStyle(color: colors.black),
     bodySmall: TextStyle(color: colors.gray),
   );
 
-  static InputDecorationTheme _buildInputDecorationTheme(AppColors colors) =>
+  InputDecorationTheme _buildInputDecorationTheme(AppColors colors) =>
       InputDecorationTheme(
         hintStyle: TextStyle(color: colors.placeHolder, fontSize: 14),
         labelStyle: TextStyle(color: colors.gray, fontSize: 14),
@@ -83,7 +84,7 @@ abstract class AppTheme {
         ),
       );
 
-  static ElevatedButtonThemeData _buildElevatedButtonTheme(
+  ElevatedButtonThemeData _buildElevatedButtonTheme(
     AppColors colors,
     bool isDark,
   ) => ElevatedButtonThemeData(
@@ -96,7 +97,7 @@ abstract class AppTheme {
     ),
   );
 
-  static OutlinedButtonThemeData _buildOutlinedButtonTheme(AppColors colors) =>
+  OutlinedButtonThemeData _buildOutlinedButtonTheme(AppColors colors) =>
       OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           side: BorderSide(color: colors.error),
@@ -109,7 +110,7 @@ abstract class AppTheme {
         ),
       );
 
-  static BottomNavigationBarThemeData _buildBottomNavTheme(AppColors colors) =>
+  BottomNavigationBarThemeData _buildBottomNavTheme(AppColors colors) =>
       BottomNavigationBarThemeData(
         backgroundColor: colors.white,
         selectedItemColor: colors.blue,

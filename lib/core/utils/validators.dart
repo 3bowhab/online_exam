@@ -1,14 +1,16 @@
+import 'package:injectable/injectable.dart';
 import 'package:online_exam/core/l10n/app_localizations.dart';
 
-abstract class Validators {
-  static String? validateRequired(String? value, AppLocalizations locale) {
+@injectable
+class Validators {
+  String? validateRequired(String? value, AppLocalizations locale) {
     if (value == null || value.trim().isEmpty) {
       return locale.requiredField;
     }
     return null;
   }
 
-  static String? validateEmail(String? value, AppLocalizations locale) {
+  String? validateEmail(String? value, AppLocalizations locale) {
     if (value == null || value.trim().isEmpty) {
       return locale.requiredField;
     }
@@ -23,7 +25,7 @@ abstract class Validators {
     return null;
   }
 
-  static String? validatePassword(String? value, AppLocalizations locale) {
+  String? validatePassword(String? value, AppLocalizations locale) {
     if (value == null || value.trim().isEmpty) {
       return locale.requiredField;
     }
@@ -33,7 +35,7 @@ abstract class Validators {
     return null;
   }
 
-  static String? validateConfirmPassword(
+  String? validateConfirmPassword(
     String? value,
     String? password,
     AppLocalizations locale,
@@ -47,7 +49,7 @@ abstract class Validators {
     return null;
   }
 
-  static String? validatePhone(String? value, AppLocalizations locale) {
+  String? validatePhone(String? value, AppLocalizations locale) {
     if (value == null || value.trim().isEmpty) {
       return locale.requiredField;
     }
@@ -60,7 +62,7 @@ abstract class Validators {
     return null;
   }
 
-  static String? validateUsername(String? value, AppLocalizations locale) {
+  String? validateUsername(String? value, AppLocalizations locale) {
     if (value == null || value.trim().isEmpty) {
       return locale.requiredField;
     }

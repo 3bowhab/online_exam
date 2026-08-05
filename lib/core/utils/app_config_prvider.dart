@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 @lazySingleton
 class AppConfigProvider extends ChangeNotifier {
   final SharedPreferences? sharedPreferences;
+  final AppTheme _appTheme;
 
   late ThemeData _themeData;
   ThemeData get themeData => _themeData;
@@ -18,8 +19,8 @@ class AppConfigProvider extends ChangeNotifier {
   Locale _appLocale = const Locale(PrefsKeys.defaultLanguage);
   Locale get appLocale => _appLocale;
 
-  AppConfigProvider({this.sharedPreferences}) {
-    _themeData = AppTheme.getTheme(LightThemeColors());
+  AppConfigProvider(this._appTheme, {this.sharedPreferences}) {
+    _themeData = _appTheme.getTheme(LightThemeColors());
   }
 
   Future<void> changeTheme(ThemeOptions themeOption) async {
@@ -31,7 +32,7 @@ class AppConfigProvider extends ChangeNotifier {
       ThemeOptions.dark => DarkThemeColors(),
     };
 
-    _themeData = AppTheme.getTheme(appColors, isDark: isDark);
+    _themeData = _appTheme.getTheme(appColors, isDark: isDark);
     await sharedPreferences?.setString(PrefsKeys.theme, themeOption.name);
     notifyListeners();
   }
@@ -41,7 +42,9 @@ class AppConfigProvider extends ChangeNotifier {
     var currentTheme = ThemeOptions.fromString(savedThemeStr);
     await changeTheme(currentTheme);
 
-    final savedLang = sharedPreferences?.getString(PrefsKeys.language) ?? PrefsKeys.defaultLanguage;
+    final savedLang =
+        sharedPreferences?.getString(PrefsKeys.language) ??
+        PrefsKeys.defaultLanguage;
     _appLocale = Locale(savedLang);
   }
 
