@@ -1,20 +1,20 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:injectable/injectable.dart';
 import 'package:online_exam/core/constants/prefs_keys.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 @injectable
 class AuthInterceptor implements Interceptor {
-  final SharedPreferences sharedPreferences;
+  final FlutterSecureStorage _secureStorage;
 
-  AuthInterceptor(this.sharedPreferences);
+  AuthInterceptor(this._secureStorage);
 
   @override
   void onRequest(
     RequestOptions options,
     RequestInterceptorHandler handler,
-  ) {
-    final token = sharedPreferences.getString(PrefsKeys.token);
+  ) async {
+    final token = await _secureStorage.read(key: PrefsKeys.token);
 
     if (token != null && token.isNotEmpty) {
       options.headers[PrefsKeys.token] = token;
