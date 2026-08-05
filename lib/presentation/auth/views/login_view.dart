@@ -49,7 +49,7 @@ class LoginViewState extends State<LoginView> {
     if (!mounted) return;
     switch (event) {
       case NavigateToHomeScreen():
-        context.go(RoutersConstants.profile);
+        context.go(RoutersConstants.mainLayout);
         break;
 
       case ShowLoginErrorSnackBar(:final message):

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:online_exam/core/di/di.dart';
-import 'package:online_exam/core/widgets/app_config_prvider.dart';
+import 'package:online_exam/core/utils/app_config_prvider.dart';
 import 'package:online_exam/core/router/app_router.dart';
 import 'package:online_exam/core/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          locale: const Locale('en'),
+          locale: appConfigProvider.appLocale,
           theme: appConfigProvider.themeData,
           routerConfig: getIt<AppRouter>().router,
         );

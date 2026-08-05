@@ -2,7 +2,7 @@ import 'package:online_exam/core/network/api_result.dart';
 import 'package:online_exam/core/network/base_response.dart';
 import 'package:online_exam/domain/entities/user_entity.dart';
 
-abstract class AuthRepository {
+abstract interface class AuthRepository {
   Future<ApiResult<BaseResponse<void>>> forgotPassword(String email);
   Future<ApiResult<BaseResponse<void>>> verifyResetCode(String resetCode);
   Future<ApiResult<BaseResponse<void>>> resetPassword(

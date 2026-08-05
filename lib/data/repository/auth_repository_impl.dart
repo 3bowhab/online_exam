@@ -1,4 +1,6 @@
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:injectable/injectable.dart';
+import 'package:online_exam/core/constants/prefs_keys.dart';
 import 'package:online_exam/core/network/api_result.dart';
 import 'package:online_exam/core/network/base_response.dart';
 import 'package:online_exam/data/datasource/contract/auth_remote_datasource.dart';
@@ -11,12 +13,19 @@ import 'package:online_exam/domain/entities/user_entity.dart';
 import 'package:online_exam/domain/repository/auth_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-@LazySingleton(as: AuthRepository)
+@Injectable(as: AuthRepository)
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource _remoteDataSource;
+  final FlutterSecureStorage _secureStorage;
   final SharedPreferences _prefs;
+  final UserMapper _userMapper;
 
-  AuthRepositoryImpl(this._remoteDataSource, this._prefs);
+  AuthRepositoryImpl(
+    this._remoteDataSource,
+    this._secureStorage,
+    this._prefs,
+    this._userMapper,
+  );
 
   @override
   Future<ApiResult<BaseResponse<void>>> forgotPassword(String email) {
@@ -54,10 +63,10 @@ class AuthRepositoryImpl implements AuthRepository {
     switch (result) {
       case ApiSuccess(:final data):
         if (data.token != null && data.token!.isNotEmpty) {
-          await _prefs.setString('token', data.token!);
+          await _secureStorage.write(key: PrefsKeys.token, value: data.token!);
         }
 
-        final userEntity = data.user.toEntity();
+        final userEntity = _userMapper.mapUserModelToUserEntity(data.user);
         return ApiSuccess(userEntity);
 
       case ApiFailure(:final error):
@@ -71,7 +80,13 @@ class AuthRepositoryImpl implements AuthRepository {
 
     switch (result) {
       case ApiSuccess():
+        await _secureStorage.delete(key: PrefsKeys.token);
+
+        await _prefs.remove(PrefsKeys.rememberMe);
+        await _prefs.remove(PrefsKeys.savedEmail);
+
         return const ApiSuccess(null);
+
       case ApiFailure(:final error):
         return ApiFailure(error);
     }

@@ -10,30 +10,31 @@ import 'package:online_exam/data/models/auth/login_response.dart';
 import 'package:online_exam/data/models/auth/logout_response.dart';
 import 'package:online_exam/data/models/auth/reset_password_request.dart';
 import 'package:online_exam/data/models/auth/verify_reset_code_request.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-@LazySingleton(as: AuthRemoteDataSource)
+@Injectable(as: AuthRemoteDataSource)
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   final ApiClient _apiClient;
-  final SharedPreferences _prefs;
 
-  AuthRemoteDataSourceImpl(this._apiClient, this._prefs);
+  AuthRemoteDataSourceImpl(this._apiClient);
 
   @override
   Future<ApiResult<BaseResponse<void>>> forgotPassword(
-      ForgotPasswordRequest request) {
+    ForgotPasswordRequest request,
+  ) {
     return safeCall(() => _apiClient.forgotPassword(request));
   }
 
   @override
   Future<ApiResult<BaseResponse<void>>> verifyResetCode(
-      VerifyResetCodeRequest request) {
+    VerifyResetCodeRequest request,
+  ) {
     return safeCall(() => _apiClient.verifyResetCode(request));
   }
 
   @override
   Future<ApiResult<BaseResponse<void>>> resetPassword(
-      ResetPasswordRequest request) {
+    ResetPasswordRequest request,
+  ) {
     return safeCall(() => _apiClient.resetPassword(request));
   }
 
@@ -43,16 +44,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-Future<ApiResult<LogoutResponse>> logout() async {
-  final token = _prefs.getString('token') ?? '';
-  final result = await safeCall(() => _apiClient.logout(token));
-
-  if (result is ApiSuccess) {
-    await _prefs.remove('token');
-    await _prefs.remove('remember_me');
-    await _prefs.remove('saved_email');
+  Future<ApiResult<LogoutResponse>> logout() {
+    return safeCall(() => _apiClient.logout());
   }
-
-  return result;
-}
 }

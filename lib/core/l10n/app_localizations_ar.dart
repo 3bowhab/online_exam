@@ -94,4 +94,94 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get logout => 'تسجيل الخروج';
+
+  @override
+  String get exploreTab => 'استكشاف';
+
+  @override
+  String get resultTab => 'النتائج';
+
+  @override
+  String get profileTab => 'الملف الشخصي';
+
+  @override
+  String get usernameLabel => 'اسم المستخدم';
+
+  @override
+  String get firstNameLabel => 'الاسم الأول';
+
+  @override
+  String get lastNameLabel => 'اسم العائلة';
+
+  @override
+  String get emailLabel => 'البريد الإلكتروني';
+
+  @override
+  String get passwordLabel => 'كلمة المرور';
+
+  @override
+  String get phoneNumberLabel => 'رقم الهاتف';
+
+  @override
+  String get changePasswordButton => 'تغيير';
+
+  @override
+  String get updateButton => 'تحديث';
+
+  @override
+  String get resetPasswordTitle => 'إعادة ضبط كلمة المرور';
+
+  @override
+  String get currentPasswordLabel => 'كلمة المرور الحالية';
+
+  @override
+  String get newPasswordLabel => 'كلمة المرور الجديدة';
+
+  @override
+  String get confirmPasswordLabel => 'تأكيد كلمة المرور';
+
+  @override
+  String get requiredField => 'هذا الحقل مطلوب';
+
+  @override
+  String get passwordNotMatched => 'كلمة المرور غير متطابقة';
+
+  @override
+  String get profileUpdatedSuccess => 'تم تحديث البيانات بنجاح';
+
+  @override
+  String get passwordChangedSuccess => 'تم تغيير كلمة المرور بنجاح';
+
+  @override
+  String get profileUpdatedSuccessfully => 'تم تحديث الملف الشخصي بنجاح';
+
+  @override
+  String get passwordChangedSuccessfully => 'تم تغيير كلمة المرور بنجاح';
+
+  @override
+  String get passwordTooShort => 'كلمة المرور يجب أن تكون 6 أحرف على الأقل';
+
+  @override
+  String get invalidPhoneNumber => 'يرجى إدخال رقم هاتف صحيح';
+
+  @override
+  String get usernameTooShort => 'اسم المستخدم يجب أن يكون 3 أحرف على الأقل';
+
+  @override
+  String get themeTitle => 'المظهر';
+
+  @override
+  String get lightTheme => 'فاتح';
+
+  @override
+  String get darkTheme => 'داكن';
+
+  @override
+  String get languageLabel => 'اللغة';
+
+  @override
+  String get english => 'الإنجليزية';
+
+  @override
+  String get arabic => 'العربية';
 }

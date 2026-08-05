@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart';
 @immutable
 sealed class ForgetPasswordFlowEvents {}
 
-// User Actions (Intents)
 class SubmitEmailEvent extends ForgetPasswordFlowEvents {
   final String email;
   SubmitEmailEvent(this.email);
@@ -20,7 +19,6 @@ class SubmitResetPasswordEvent extends ForgetPasswordFlowEvents {
   SubmitResetPasswordEvent({required this.email, required this.newPassword});
 }
 
-// Single-time UI Events (Navigation & Dialogs)
 sealed class AuthUiEvents {}
 
 class NavigateToVerifyCodeScreen extends AuthUiEvents {

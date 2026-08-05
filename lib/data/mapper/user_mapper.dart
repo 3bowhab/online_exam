@@ -1,14 +1,24 @@
+import 'package:injectable/injectable.dart';
 import 'package:online_exam/data/models/auth/login_response.dart';
 import 'package:online_exam/domain/entities/user_entity.dart';
 
-extension UserMapper on UserModel? {
-  UserEntity toEntity() {
+@injectable
+class UserMapper {
+  UserEntity mapUserModelToUserEntity(UserModel? model) {
     return UserEntity(
-      id: this?.id ?? '',
-      username: this?.username ?? '',
-      email: this?.email ?? '',
-      firstName: this?.firstName ?? '',
-      lastName: this?.lastName ?? '',
+      id: model?.id ?? '',
+      username: model?.username ?? '',
+      email: model?.email ?? '',
+      firstName: model?.firstName ?? '',
+      lastName: model?.lastName ?? '',
+      phone: model?.phone ?? '',
     );
+  }
+
+  List<UserEntity> mapUserModelListToUserEntityList(
+    List<UserModel>? models,
+  ) {
+    if (models == null || models.isEmpty) return [];
+    return models.map(mapUserModelToUserEntity).toList();
   }
 }
